@@ -1,0 +1,70 @@
+[gd_scene load_steps=14 format=3 uid="uid://bfttq6uydsree"]
+
+[ext_resource type="Texture2D" uid="uid://dl3ks270b1404" path="res://assets/graphics/objects.png" id="1_v8hwy"]
+[ext_resource type="Script" path="res://objects/firepit/firepit.gd" id="1_x27uj"]
+[ext_resource type="Shader" path="res://shaders/pixel_fire.gdshader" id="2_5jeby"]
+[ext_resource type="Texture2D" uid="uid://cc7u3gamr4umv" path="res://assets/graphics/rect_16.png" id="3_cotx8"]
+[ext_resource type="Texture2D" uid="uid://db4evix0glhdh" path="res://assets/graphics/kenney/light/light_01.png" id="5_k6x68"]
+[ext_resource type="Script" path="res://scripts/nodes/flicker_light.gd" id="6_dw5ko"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4qnyu"]
+radius = 3.0
+height = 20.0
+
+[sub_resource type="Gradient" id="Gradient_0eb7x"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_avmat"]
+gradient = SubResource("Gradient_0eb7x")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_g23jc"]
+noise_type = 4
+frequency = 0.0323
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0irtd"]
+width = 128
+height = 128
+seamless = true
+noise = SubResource("FastNoiseLite_g23jc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yhpet"]
+shader = ExtResource("2_5jeby")
+shader_parameter/color_high = Color(0.921569, 0.898039, 0.670588, 1)
+shader_parameter/color_mid = Color(0.760784, 0.552941, 0.419608, 1)
+shader_parameter/color_low = Color(0.631373, 0.137255, 0.301961, 1)
+shader_parameter/spread = 0.6
+shader_parameter/pixel_size = 1
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_0irtd")
+shader_parameter/gradient_texture = SubResource("GradientTexture2D_avmat")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4r422"]
+
+[node name="Firepit" type="Node2D"]
+script = ExtResource("1_x27uj")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_4qnyu")
+
+[node name="Pit" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("1_v8hwy")
+offset = Vector2(0, -3)
+region_enabled = true
+region_rect = Rect2(0, 0, 32, 16)
+
+[node name="Fire" type="Sprite2D" parent="Pit"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_yhpet")
+texture = ExtResource("3_cotx8")
+offset = Vector2(0, -8)
+region_rect = Rect2(0, 0, 32, 32)
+
+[node name="FireLight" type="PointLight2D" parent="."]
+unique_name_in_owner = true
+energy = 0.673901
+shadow_enabled = true
+texture = ExtResource("5_k6x68")
+script = ExtResource("6_dw5ko")
+noise = SubResource("FastNoiseLite_4r422")
