@@ -9,7 +9,7 @@ const ACTION_QUIT_GAME : StringName = &"quit_game"
 
 const ACTION_START_SINGLEPLAYER : StringName = &"start_singleplayer"
 const ACTION_START_MULTIPLAYER : StringName = &"start_multiplayer"
-const ACtION_RESUME_GAME : StringName = &"resume_game"
+const ACTION_RESUME_GAME : StringName = &"resume_game"
 const ACTION_RESPAWN : StringName = &"respawn" 
 
 const DIALOG_MODE_OK : int = 0

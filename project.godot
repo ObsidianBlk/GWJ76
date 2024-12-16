@@ -20,6 +20,19 @@ config/icon="res://icon.svg"
 Settings="*res://scripts/autos/settings.gd"
 AVC="*res://scripts/autos/avc.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/OBSControlLibrary/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://assets/": "pink",
+"res://objects/": "yellow",
+"res://scenes/": "blue",
+"res://scripts/": "orange"
+}
+
 [input]
 
 game.move_up={
