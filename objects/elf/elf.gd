@@ -5,6 +5,7 @@ class_name Elf
 # Signals
 # ------------------------------------------------------------------------------
 signal animation_finished(anim_name : StringName)
+signal animation_looped(anim_name : StringName)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
@@ -19,7 +20,7 @@ signal animation_finished(anim_name : StringName)
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-
+var _carrying : Node2D = null
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -37,6 +38,7 @@ signal animation_finished(anim_name : StringName)
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	_sprite.animation_finished.connect(_on_sprite_animation_finished)
+	_sprite.animation_looped.connect(_on_sprite_animation_looped)
 
 # ------------------------------------------------------------------------------
 # Private Methods
@@ -67,7 +69,9 @@ func update_velocity(direction : Vector2, speed : float, acceleration : float, d
 		direction = direction.normalized()
 		velocity.x = lerpf(velocity.x, direction.x * speed, acceleration)
 		velocity.y = lerpf(velocity.y, direction.y * speed, acceleration)
-	
+
+func is_carrying() -> bool:
+	return _carrying != null
 
 # ------------------------------------------------------------------------------
 # Handler Methods
@@ -76,4 +80,6 @@ func _on_sprite_animation_finished() -> void:
 	if _sprite == null: return
 	animation_finished.emit(_sprite.animation)
 
-
+func _on_sprite_animation_looped() -> void:
+	if _sprite == null: return
+	animation_looped.emit(_sprite.animation)

@@ -1,11 +1,27 @@
-[gd_scene load_steps=2 format=3 uid="uid://1yr0q534siuc"]
+[gd_scene load_steps=5 format=3 uid="uid://1yr0q534siuc"]
 
+[ext_resource type="Script" path="res://objects/log/log.gd" id="1_07dbp"]
 [ext_resource type="Texture2D" uid="uid://dl3ks270b1404" path="res://assets/graphics/objects.png" id="1_uqk0l"]
+[ext_resource type="Script" path="res://scripts/nodes/interactable.gd" id="2_tu70v"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fasu4"]
+radius = 4.0
 
 [node name="Log" type="Node2D"]
+script = ExtResource("1_07dbp")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_uqk0l")
 offset = Vector2(0, -5.235)
 region_enabled = true
 region_rect = Rect2(64, 0, 16, 16)
+
+[node name="Interactable" type="Area2D" parent="."]
+script = ExtResource("2_tu70v")
+type = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_fasu4")
+
+[connection signal="interacted" from="Interactable" to="." method="_on_interacted"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://cay4hlqqt2x2p"]
+[gd_scene load_steps=55 format=3 uid="uid://cay4hlqqt2x2p"]
 
 [ext_resource type="Script" path="res://objects/elf/elf.gd" id="1_kmnh1"]
 [ext_resource type="Texture2D" uid="uid://ibraj4lujg1h" path="res://assets/graphics/character.png" id="1_mn771"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_move.gd" id="5_65fmf"]
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_chop.gd" id="7_clem8"]
 [ext_resource type="Script" path="res://scripts/nodes/interact_component.gd" id="7_s2qci"]
+[ext_resource type="Script" path="res://objects/elf/states/elf_state_pickup.gd" id="8_0qeo5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wrfw2"]
 atlas = ExtResource("1_mn771")
@@ -427,6 +428,9 @@ script = ExtResource("5_65fmf")
 
 [node name="Chop" type="Node" parent="StateMachine"]
 script = ExtResource("7_clem8")
+
+[node name="Pickup" type="Node" parent="StateMachine"]
+script = ExtResource("8_0qeo5")
 
 [node name="InteractComponent" type="Area2D" parent="." groups=["PlayerInteractComp"]]
 script = ExtResource("7_s2qci")

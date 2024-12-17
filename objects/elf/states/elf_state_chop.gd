@@ -67,5 +67,3 @@ func _on_host_animation_finished(anim_name : StringName) -> void:
 		if _interactable != null:
 			_interactable.interact()
 		transition.emit(TRANSITION_STATE)
-
-

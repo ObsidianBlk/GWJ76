@@ -40,7 +40,7 @@ shape = SubResource("CapsuleShape2D_lw0rr")
 
 [node name="Interactable_Right" type="Area2D" parent="."]
 script = ExtResource("3_ejf7x")
-type = 1
+type = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Right"]
 position = Vector2(12, 15)
@@ -48,7 +48,7 @@ shape = SubResource("RectangleShape2D_kp8hv")
 
 [node name="Interactable_Left" type="Area2D" parent="."]
 script = ExtResource("3_ejf7x")
-type = 1
+type = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Left"]
 position = Vector2(-12, 15)
@@ -64,5 +64,5 @@ lifetime = 0.5
 one_shot = true
 explosiveness = 1.0
 
-[connection signal="interacted" from="Interactable_Right" to="." method="_on_interacted"]
-[connection signal="interacted" from="Interactable_Left" to="." method="_on_interacted"]
+[connection signal="interacted" from="Interactable_Right" to="." method="_on_interacted" binds= [&"RIGHT"]]
+[connection signal="interacted" from="Interactable_Left" to="." method="_on_interacted" binds= [&"LEFT"]]

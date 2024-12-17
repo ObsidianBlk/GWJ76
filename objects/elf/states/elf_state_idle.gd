@@ -14,6 +14,7 @@ const ANIM_BLINK : StringName = &"blink"
 
 const TRANSITION_MOVE : StringName = &"Move"
 const TRANSITION_CHOP : StringName = &"Chop"
+const TRANSITION_PICKUP : StringName = &"Pickup"
 
 const ACTION_NO_BLINK : StringName = &"no_blink"
 const ACTION_BLINK : StringName = &"blink"
@@ -45,6 +46,9 @@ func _HandleInteraction() -> void:
 	match interactable.type:
 		Interactable.IType.TRUNK:
 			transition.emit(TRANSITION_CHOP)
+		Interactable.IType.PICKUP:
+			if not host.is_carrying():
+				transition.emit(TRANSITION_PICKUP)
 		Interactable.IType.MISC:
 			interactable.interact()
 
@@ -53,7 +57,11 @@ func _HandleInteraction() -> void:
 # ------------------------------------------------------------------------------
 func enter() -> void:
 	if host == null: return
+	host.animation_finished.connect(_on_host_animation_finished)
 	play_animation(ANIM_IDLE)
+
+func exit() -> void:
+	host.animation_finished.disconnect(_on_host_animation_finished)
 
 func update(delta : float) -> void:
 	if _blink_check > 0.0:
@@ -72,6 +80,6 @@ func handle_input(event : InputEvent) -> void:
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-
-
-
+func _on_host_animation_finished(anim_name : StringName) -> void:
+	if anim_name.begins_with(ANIM_BLINK):
+		play_animation(ANIM_IDLE)

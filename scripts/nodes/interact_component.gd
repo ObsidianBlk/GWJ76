@@ -20,7 +20,7 @@ signal interact_exited(interactable : Interactable)
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _interactable : WeakRef = weakref(null)
+var _interactables : Array[WeakRef] = []
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -42,27 +42,39 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
+func _GetIndex(item : Interactable) -> int:
+	for idx : int in range(_interactables.size()):
+		if _interactables[idx].get_ref() == item:
+			return idx
+	return -1
 
+func _CleanList() -> void:
+	_interactables = _interactables.filter(func(item : WeakRef): return item.get_ref() != null)
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func get_interactable() -> Interactable:
-	return _interactable.get_ref()
+func get_count() -> int:
+	_CleanList()
+	return _interactables.size()
+
+func get_interactable(idx : int = 0) -> Interactable:
+	_CleanList()
+	if idx >= 0 and idx < _interactables.size():
+		return _interactables[idx].get_ref()
+	return null
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
 func _on_area_entered(area : Area2D) -> void:
-	var interactable : Interactable = _interactable.get_ref()
-	if area is Interactable and interactable == null:
-		_interactable = weakref(area)
+	if area is Interactable and _GetIndex(area) < 0:
+		_interactables.append(weakref(area))
 		interact_entered.emit(area)
 
 func _on_area_exited(area : Area2D) -> void:
-	var interactable : Interactable = _interactable.get_ref()
-	if area is Interactable and interactable == area:
-		_interactable = weakref(null)
+	if area is Interactable:
+		var idx : int = _GetIndex(area)
+		if idx >= 0:
+			_interactables.remove_at(idx)
 		interact_exited.emit(area)
-
-
