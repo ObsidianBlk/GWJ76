@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://cay4hlqqt2x2p"]
+[gd_scene load_steps=54 format=3 uid="uid://cay4hlqqt2x2p"]
 
 [ext_resource type="Script" path="res://objects/elf/elf.gd" id="1_kmnh1"]
 [ext_resource type="Texture2D" uid="uid://ibraj4lujg1h" path="res://assets/graphics/character.png" id="1_mn771"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://c22gse65gmsmy" path="res://assets/graphics/shadow.png" id="2_s43ie"]
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_idle.gd" id="4_q73rd"]
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_move.gd" id="5_65fmf"]
+[ext_resource type="Script" path="res://objects/elf/states/elf_state_chop.gd" id="7_clem8"]
+[ext_resource type="Script" path="res://scripts/nodes/interact_component.gd" id="7_s2qci"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wrfw2"]
 atlas = ExtResource("1_mn771")
@@ -238,7 +240,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bm6lp")
 }],
-"loop": true,
+"loop": false,
 "name": &"chop_down",
 "speed": 5.0
 }, {
@@ -252,7 +254,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_h6sjy")
 }],
-"loop": true,
+"loop": false,
 "name": &"chop_side",
 "speed": 5.0
 }, {
@@ -266,7 +268,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_b5odl")
 }],
-"loop": true,
+"loop": false,
 "name": &"chop_up",
 "speed": 5.0
 }, {
@@ -391,6 +393,9 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_cvyvr"]
 radius = 4.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_fvx7f"]
+radius = 6.0
+
 [node name="Elf" type="CharacterBody2D"]
 script = ExtResource("1_kmnh1")
 
@@ -403,7 +408,7 @@ offset = Vector2(0, -6)
 [node name="ASprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 3
 sprite_frames = SubResource("SpriteFrames_ulab5")
-animation = &"idle_down"
+animation = &"chop_up"
 offset = Vector2(0, -8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -419,3 +424,13 @@ script = ExtResource("4_q73rd")
 
 [node name="Move" type="Node" parent="StateMachine"]
 script = ExtResource("5_65fmf")
+
+[node name="Chop" type="Node" parent="StateMachine"]
+script = ExtResource("7_clem8")
+
+[node name="InteractComponent" type="Area2D" parent="." groups=["PlayerInteractComp"]]
+script = ExtResource("7_s2qci")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractComponent"]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_fvx7f")

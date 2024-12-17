@@ -1,15 +1,17 @@
-extends CharacterBody2D
-class_name Elf
+extends ElfState
+class_name ElfStateChop
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal animation_finished(anim_name : StringName)
+
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
+const ANIM_CHOP : StringName = &"chop"
 
+const TRANSITION_STATE : StringName = &"Idle"
 
 # ------------------------------------------------------------------------------
 # Export Variables
@@ -19,12 +21,11 @@ signal animation_finished(anim_name : StringName)
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-
+var _interactable : Interactable = null
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-@onready var _sprite: AnimatedSprite2D = $ASprite
 
 
 # ------------------------------------------------------------------------------
@@ -35,8 +36,7 @@ signal animation_finished(anim_name : StringName)
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-func _ready() -> void:
-	_sprite.animation_finished.connect(_on_sprite_animation_finished)
+
 
 # ------------------------------------------------------------------------------
 # Private Methods
@@ -46,34 +46,26 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func flip(enable : bool) -> void:
-	if _sprite == null: return
-	_sprite.flip_h = enable
-
-func play_animation(anim_name : StringName) -> void:
-	if _sprite == null: return
-	if _sprite.sprite_frames.has_animation(anim_name) and _sprite.animation != anim_name:
-		_sprite.play(anim_name)
-
-func get_animation() -> StringName:
-	if _sprite == null: return &""
-	return _sprite.animation
-
-func update_velocity(direction : Vector2, speed : float, acceleration : float, deceleration : float) -> void:
-	if direction.is_equal_approx(Vector2.ZERO):
-		velocity.x = lerpf(velocity.x, 0.0, deceleration)
-		velocity.y = lerpf(velocity.y, 0.0, deceleration)
+func enter() -> void:
+	if host == null: return
+	if interact_component == null: return
+	_interactable = interact_component.get_interactable()
+	if _interactable != null:
+		host.animation_finished.connect(_on_host_animation_finished)
+		play_animation(ANIM_CHOP)
 	else:
-		direction = direction.normalized()
-		velocity.x = lerpf(velocity.x, direction.x * speed, acceleration)
-		velocity.y = lerpf(velocity.y, direction.y * speed, acceleration)
-	
+		transition.emit(TRANSITION_STATE)
+
+func exit() -> void:
+	host.animation_finished.disconnect(_on_host_animation_finished)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_sprite_animation_finished() -> void:
-	if _sprite == null: return
-	animation_finished.emit(_sprite.animation)
+func _on_host_animation_finished(anim_name : StringName) -> void:
+	if anim_name.begins_with(ANIM_CHOP):
+		if _interactable != null:
+			_interactable.interact()
+		transition.emit(TRANSITION_STATE)
 
 

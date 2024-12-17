@@ -15,6 +15,8 @@ const FACING_NAME_RIGHT: StringName = &"right"
 const FACING_NAME_UP: StringName = &"up"
 const FACING_NAME_DOWN: StringName = &"down"
 
+const GROUP_INTERACT_COMPONENT : StringName = &"PlayerInteractComp"
+
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
@@ -24,6 +26,7 @@ const FACING_NAME_DOWN: StringName = &"down"
 # Variables
 # ------------------------------------------------------------------------------
 var host : Elf = null
+var interact_component : InteractComponent = null
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -42,6 +45,13 @@ func _ready() -> void:
 	await owner.ready
 	if owner is Elf:
 		host = owner
+		var cmps : Array[Node] = get_tree().get_nodes_in_group(GROUP_INTERACT_COMPONENT)
+		for cmp : Node in cmps:
+			if cmp is InteractComponent and host.is_ancestor_of(cmp):
+				interact_component = cmp
+				break
+		if interact_component == null:
+			printerr("Failed to find interact component for ", host.name)
 	if host == null:
 		printerr("[", name, "]: Null Host Node")
 	

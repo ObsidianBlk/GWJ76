@@ -12,6 +12,9 @@ class_name ElfStateIdle
 const ANIM_IDLE : StringName = &"idle"
 const ANIM_BLINK : StringName = &"blink"
 
+const TRANSITION_MOVE : StringName = &"Move"
+const TRANSITION_CHOP : StringName = &"Chop"
+
 const ACTION_NO_BLINK : StringName = &"no_blink"
 const ACTION_BLINK : StringName = &"blink"
 
@@ -32,11 +35,25 @@ var _blink_weight : WeightedRandomCollection = WeightedRandomCollection.new([
 var _blink_check : float = BLINK_CHECK_DELAY
 
 # ------------------------------------------------------------------------------
+# Private Methods
+# ------------------------------------------------------------------------------
+func _HandleInteraction() -> void:
+	if interact_component == null: return
+	var interactable : Interactable = interact_component.get_interactable()
+	if interactable == null: return
+	
+	match interactable.type:
+		Interactable.IType.TRUNK:
+			transition.emit(TRANSITION_CHOP)
+		Interactable.IType.MISC:
+			interactable.interact()
+
+# ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
 func enter() -> void:
 	if host == null: return
-	play_animation(&"idle")
+	play_animation(ANIM_IDLE)
 
 func update(delta : float) -> void:
 	if _blink_check > 0.0:
@@ -47,8 +64,10 @@ func update(delta : float) -> void:
 		_blink_check = BLINK_CHECK_DELAY
 
 func handle_input(event : InputEvent) -> void:
+	if event.is_action_pressed(&"game.interact"):
+		_HandleInteraction()
 	if is_event_action(event, [&"game.move_up", &"game.move_down", &"game.move_left", &"game.move_right"]):
-		transition.emit(&"Move")
+		transition.emit(TRANSITION_MOVE)
 
 # ------------------------------------------------------------------------------
 # Handler Methods

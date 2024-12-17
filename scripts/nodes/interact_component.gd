@@ -1,10 +1,11 @@
-extends CharacterBody2D
-class_name Elf
+extends Area2D
+class_name InteractComponent
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal animation_finished(anim_name : StringName)
+signal interact_entered(interactable : Interactable)
+signal interact_exited(interactable : Interactable)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
@@ -19,12 +20,11 @@ signal animation_finished(anim_name : StringName)
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-
+var _interactable : WeakRef = weakref(null)
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-@onready var _sprite: AnimatedSprite2D = $ASprite
 
 
 # ------------------------------------------------------------------------------
@@ -36,7 +36,8 @@ signal animation_finished(anim_name : StringName)
 # Override Methods
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	_sprite.animation_finished.connect(_on_sprite_animation_finished)
+	area_entered.connect(_on_area_entered)
+	area_exited.connect(_on_area_exited)
 
 # ------------------------------------------------------------------------------
 # Private Methods
@@ -46,34 +47,22 @@ func _ready() -> void:
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func flip(enable : bool) -> void:
-	if _sprite == null: return
-	_sprite.flip_h = enable
-
-func play_animation(anim_name : StringName) -> void:
-	if _sprite == null: return
-	if _sprite.sprite_frames.has_animation(anim_name) and _sprite.animation != anim_name:
-		_sprite.play(anim_name)
-
-func get_animation() -> StringName:
-	if _sprite == null: return &""
-	return _sprite.animation
-
-func update_velocity(direction : Vector2, speed : float, acceleration : float, deceleration : float) -> void:
-	if direction.is_equal_approx(Vector2.ZERO):
-		velocity.x = lerpf(velocity.x, 0.0, deceleration)
-		velocity.y = lerpf(velocity.y, 0.0, deceleration)
-	else:
-		direction = direction.normalized()
-		velocity.x = lerpf(velocity.x, direction.x * speed, acceleration)
-		velocity.y = lerpf(velocity.y, direction.y * speed, acceleration)
-	
+func get_interactable() -> Interactable:
+	return _interactable.get_ref()
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_sprite_animation_finished() -> void:
-	if _sprite == null: return
-	animation_finished.emit(_sprite.animation)
+func _on_area_entered(area : Area2D) -> void:
+	var interactable : Interactable = _interactable.get_ref()
+	if area is Interactable and interactable == null:
+		_interactable = weakref(area)
+		interact_entered.emit(area)
+
+func _on_area_exited(area : Area2D) -> void:
+	var interactable : Interactable = _interactable.get_ref()
+	if area is Interactable and interactable == area:
+		_interactable = weakref(null)
+		interact_exited.emit(area)
 
 

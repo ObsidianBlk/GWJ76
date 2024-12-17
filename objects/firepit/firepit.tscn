@@ -11,10 +11,10 @@
 radius = 3.0
 height = 20.0
 
-[sub_resource type="Gradient" id="Gradient_0eb7x"]
+[sub_resource type="Gradient" id="Gradient_ge6sl"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_avmat"]
-gradient = SubResource("Gradient_0eb7x")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_va5op"]
+gradient = SubResource("Gradient_ge6sl")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_g23jc"]
 noise_type = 4
@@ -34,7 +34,7 @@ shader_parameter/color_low = Color(0.631373, 0.137255, 0.301961, 1)
 shader_parameter/spread = 0.6
 shader_parameter/pixel_size = 1
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_0irtd")
-shader_parameter/gradient_texture = SubResource("GradientTexture2D_avmat")
+shader_parameter/gradient_texture = SubResource("GradientTexture2D_va5op")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4r422"]
 
@@ -52,7 +52,7 @@ unique_name_in_owner = true
 texture = ExtResource("1_v8hwy")
 offset = Vector2(0, -3)
 region_enabled = true
-region_rect = Rect2(0, 0, 32, 16)
+region_rect = Rect2(0, 32, 32, 16)
 
 [node name="Fire" type="Sprite2D" parent="Pit"]
 unique_name_in_owner = true
@@ -63,8 +63,10 @@ region_rect = Rect2(0, 0, 32, 32)
 
 [node name="FireLight" type="PointLight2D" parent="."]
 unique_name_in_owner = true
-energy = 0.673901
+energy = 0.895618
 shadow_enabled = true
 texture = ExtResource("5_k6x68")
 script = ExtResource("6_dw5ko")
+base_energy = 2.0
+min_strength = 0.25
 noise = SubResource("FastNoiseLite_4r422")
