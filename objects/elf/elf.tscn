@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://cay4hlqqt2x2p"]
+[gd_scene load_steps=65 format=3 uid="uid://cay4hlqqt2x2p"]
 
 [ext_resource type="Script" path="res://objects/elf/elf.gd" id="1_kmnh1"]
 [ext_resource type="Texture2D" uid="uid://ibraj4lujg1h" path="res://assets/graphics/character.png" id="1_mn771"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/nodes/interact_component.gd" id="7_s2qci"]
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_pickup.gd" id="8_0qeo5"]
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_death.gd" id="9_gi08a"]
+[ext_resource type="Script" path="res://objects/elf/states/elf_state_putdown.gd" id="9_wiv5j"]
 [ext_resource type="Script" path="res://scripts/nodes/temperature_component.gd" id="10_cb8c3"]
 [ext_resource type="Texture2D" uid="uid://dqysnk3crkhvx" path="res://assets/graphics/tex_progress_bars/temperature_progress_bar_under.png" id="12_ydndl"]
 [ext_resource type="Texture2D" uid="uid://bmry650fke4am" path="res://assets/graphics/tex_progress_bars/temperature_progress_bar_over.png" id="13_r3ers"]
@@ -461,6 +462,9 @@ script = ExtResource("7_clem8")
 
 [node name="Pickup" type="Node" parent="StateMachine"]
 script = ExtResource("8_0qeo5")
+
+[node name="Putdown" type="Node" parent="StateMachine"]
+script = ExtResource("9_wiv5j")
 
 [node name="Death" type="Node" parent="StateMachine"]
 script = ExtResource("9_gi08a")

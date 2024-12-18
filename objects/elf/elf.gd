@@ -97,6 +97,9 @@ func show_body_temp() -> void:
 func is_carrying() -> bool:
 	return _carrying != null
 
+func get_carrying() -> Node2D:
+	return _carrying
+
 func throw_carrying() -> void:
 	if _carrying == null: return
 	var parent : Node = get_parent()
@@ -113,6 +116,7 @@ func free_carrying() -> void:
 	if _carrying == null: return
 	_carry_container.remove_child(_carrying)
 	_carrying.queue_free()
+	_carrying = null
 
 # ------------------------------------------------------------------------------
 # Handler Methods

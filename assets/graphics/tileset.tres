@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=9 format=3 uid="uid://dx3u8ly6mu55n"]
+[gd_resource type="TileSet" load_steps=11 format=3 uid="uid://dx3u8ly6mu55n"]
 
 [ext_resource type="Texture2D" uid="uid://8b413wtrnayc" path="res://assets/graphics/tileset.png" id="1_bb8jn"]
+[ext_resource type="Texture2D" uid="uid://dl3ks270b1404" path="res://assets/graphics/objects.png" id="2_i1gke"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_xr2t2"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, -3.9685, -4.06772, -4.06772, -4.06771, 8, -8, 8)
@@ -614,6 +615,15 @@ texture = ExtResource("1_bb8jn")
 7:8/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_ainm7")
 7:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bt2hi"]
+texture = ExtResource("2_i1gke")
+0:4/size_in_atlas = Vector2i(3, 5)
+0:4/0 = 0
+0:4/0/y_sort_origin = 36
+3:4/size_in_atlas = Vector2i(3, 5)
+3:4/0 = 0
+3:4/0/y_sort_origin = 36
+
 [resource]
 occlusion_layer_0/light_mask = 1
 physics_layer_0/collision_layer = 1
@@ -623,3 +633,4 @@ terrain_set_0/terrain_0/color = Color(0.1105, 0.714425, 0.85, 1)
 terrain_set_0/terrain_1/name = "Dirt"
 terrain_set_0/terrain_1/color = Color(0.5, 0.25, 0.25, 1)
 sources/0 = SubResource("TileSetAtlasSource_i2cmo")
+sources/1 = SubResource("TileSetAtlasSource_bt2hi")

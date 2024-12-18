@@ -1,0 +1,50 @@
+[gd_scene load_steps=6 format=3 uid="uid://bvuu7jml5snqw"]
+
+[ext_resource type="Script" path="res://objects/wood_station/wood_station.gd" id="1_4edey"]
+[ext_resource type="Texture2D" uid="uid://dl3ks270b1404" path="res://assets/graphics/objects.png" id="1_d8s5q"]
+[ext_resource type="Script" path="res://scripts/nodes/interactable.gd" id="2_xxypd"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1wley"]
+radius = 4.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7nd6c"]
+size = Vector2(10, 8)
+
+[node name="WoodStation" type="Node2D"]
+script = ExtResource("1_4edey")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_1wley")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_d8s5q")
+region_enabled = true
+region_rect = Rect2(64, 32, 32, 32)
+
+[node name="Container" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -6)
+
+[node name="Interactable_Top" type="Area2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_xxypd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Top"]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_7nd6c")
+
+[node name="Interactable_Bottom" type="Area2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_xxypd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Bottom"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_7nd6c")
+
+[connection signal="interacted" from="Interactable_Top" to="." method="_on_interacted"]
+[connection signal="placed" from="Interactable_Top" to="." method="_on_placed"]
+[connection signal="interacted" from="Interactable_Bottom" to="." method="_on_interacted"]
+[connection signal="placed" from="Interactable_Bottom" to="." method="_on_placed"]

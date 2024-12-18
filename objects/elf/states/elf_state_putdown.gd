@@ -1,5 +1,5 @@
 extends ElfState
-class_name ElfStatePickup
+class_name ElfStatePutdown
 
 
 # ------------------------------------------------------------------------------
@@ -13,15 +13,15 @@ const TRANSITION_IDLE : StringName = &"Idle"
 # ------------------------------------------------------------------------------
 var _interactable : Interactable = null
 
-
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
 func enter(payload : Variant = null) -> void:
 	if host == null: return
 	if interact_component == null: return
+	
 	_interactable = interact_component.get_interactable()
-	if _interactable != null:
+	if host.is_carrying() and _interactable != null and _interactable.placeable:
 		host.animation_looped.connect(_on_host_animation_looped)
 		play_animation(ANIM_WORK)
 	else:
@@ -36,5 +36,7 @@ func exit() -> void:
 func _on_host_animation_looped(anim_name : StringName) -> void:
 	if anim_name.begins_with(ANIM_WORK):
 		if _interactable != null:
-			_interactable.interact()
+			var item : Node2D = host.get_carrying()
+			host.free_carrying()
+			_interactable.place(item)
 		transition.emit(TRANSITION_IDLE)

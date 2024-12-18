@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://k721ga0i20fb"]
+[gd_scene load_steps=15 format=4 uid="uid://k721ga0i20fb"]
 
 [ext_resource type="TileSet" uid="uid://dx3u8ly6mu55n" path="res://assets/graphics/tileset.tres" id="1_2t3lj"]
 [ext_resource type="Script" path="res://scenes/game_world/game_world.gd" id="1_622l6"]
@@ -7,16 +7,14 @@
 [ext_resource type="PackedScene" uid="uid://cay4hlqqt2x2p" path="res://objects/elf/elf.tscn" id="3_bk3ur"]
 [ext_resource type="Script" path="res://scripts/nodes/day_cycle_modulate.gd" id="4_7nv66"]
 [ext_resource type="PackedScene" uid="uid://cvnehmqwtuemd" path="res://objects/door/door.tscn" id="5_grfw8"]
+[ext_resource type="Script" path="res://scripts/nodes/interactable.gd" id="6_h1xg8"]
 [ext_resource type="PackedScene" uid="uid://d3udbdg0xb2i4" path="res://objects/trunk/trunk.tscn" id="6_ig0dx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ulgvc"]
 size = Vector2(2048, 2048)
 
-[sub_resource type="Gradient" id="Gradient_mjdyu"]
-offsets = PackedFloat32Array(0, 0.0833333, 0.208333, 0.291667, 0.625, 0.666667, 0.75)
-colors = PackedColorArray(0, 0.108, 0.27, 1, 0, 0.109804, 0.270588, 1, 0.62, 0.320333, 0, 1, 0.754926, 0.895225, 0.919799, 1, 0.689147, 0.862325, 0.896787, 1, 0.53, 0.432833, 0, 1, 0, 0.109804, 0.270588, 1)
-metadata/_snap_enabled = true
-metadata/_snap_count = 24
+[sub_resource type="CircleShape2D" id="CircleShape2D_1odxi"]
+radius = 12.0
 
 [sub_resource type="Gradient" id="Gradient_qdc51"]
 offsets = PackedFloat32Array(0.346405, 0.823529)
@@ -29,9 +27,17 @@ height = 128
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
-[node name="GameWorld" type="Node2D"]
+[sub_resource type="Gradient" id="Gradient_mjdyu"]
+offsets = PackedFloat32Array(0, 0.0833333, 0.208333, 0.291667, 0.625, 0.666667, 0.75)
+colors = PackedColorArray(0, 0.108, 0.27, 1, 0, 0.109804, 0.270588, 1, 0.62, 0.320333, 0, 1, 0.754926, 0.895225, 0.919799, 1, 0.689147, 0.862325, 0.896787, 1, 0.53, 0.432833, 0, 1, 0, 0.109804, 0.270588, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 24
+
+[node name="GameWorld" type="Node2D" node_paths=PackedStringArray("object_container")]
 y_sort_enabled = true
 script = ExtResource("1_622l6")
+object_container = NodePath("TileMapObjects")
+max_logs = 4
 
 [node name="WorldHeater" type="Area2D" parent="."]
 visible = false
@@ -54,37 +60,53 @@ texture_filter = 3
 tile_map_data = PackedByteArray("AAD/////AAAHAAYAAAD//wAAAAAHAAcAAAD//wEAAAAHAAcAAAD//wIAAAAHAAcAAAD//wMAAAAHAAcAAAAAAP//AAAIAAYAAAAAAAAAAAACAAgAAAAAAAEAAAAFAAcAAAAAAAIAAAACAAYAAAAAAAMAAAACAAcAAAABAP//AAAIAAYAAAABAAAAAAACAAkAAAABAAEAAAABAAcAAAABAAIAAAACAAoAAAABAAMAAAACAAcAAAACAP//AAAIAAYAAAACAAAAAAACAAcAAAACAAEAAAACAAcAAAACAAIAAAACAAcAAAACAAMAAAACAAcAAAADAP//AAAIAAYAAAADAAAAAAACAAcAAAADAAEAAAACAAcAAAADAAIAAAACAAcAAAADAAMAAAACAAcAAAAEAP//AAAJAAYAAAAEAAAAAAAJAAcAAAAEAAEAAAAJAAcAAAAEAAIAAAAJAAcAAAAEAAMAAAAJAAcAAAD//wQAAAAHAAgAAAAAAAQAAAAHAAgAAAACAAQAAAAHAAgAAAADAAQAAAAHAAgAAAAEAAQAAAAHAAgAAAA=")
 tile_set = ExtResource("1_2t3lj")
 
-[node name="Door" parent="." instance=ExtResource("5_grfw8")]
+[node name="TileMapObjects" type="TileMapLayer" parent="."]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAD7/wAAAQAAAAQAAAD4//7/AQAAAAQAAAD1/wIAAQADAAQAAAD5/wIAAQADAAQAAAA=")
+tile_set = ExtResource("1_2t3lj")
+
+[node name="Door" parent="TileMapObjects" instance=ExtResource("5_grfw8")]
 position = Vector2(16, 80)
 
-[node name="Firepit" parent="." instance=ExtResource("2_1hcvr")]
+[node name="Firepit" parent="TileMapObjects" node_paths=PackedStringArray("heater_component", "interactable") instance=ExtResource("2_1hcvr")]
 position = Vector2(8, 25)
+heater_component = NodePath("HeaterComponent")
+interactable = NodePath("Interactable")
 
-[node name="HeaterComponent" type="Area2D" parent="Firepit"]
+[node name="HeaterComponent" type="Area2D" parent="TileMapObjects/Firepit"]
 script = ExtResource("2_0mtnx")
 heat_value = 40.0
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Firepit/HeaterComponent"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="TileMapObjects/Firepit/HeaterComponent"]
 polygon = PackedVector2Array(-8, -25, -8, 39, 58, 39, 58, -25)
 
-[node name="Elf" parent="." instance=ExtResource("3_bk3ur")]
+[node name="Interactable" type="Area2D" parent="TileMapObjects/Firepit"]
+script = ExtResource("6_h1xg8")
+type = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapObjects/Firepit/Interactable"]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_1odxi")
+
+[node name="Elf" parent="TileMapObjects" instance=ExtResource("3_bk3ur")]
 position = Vector2(49, 49)
 
-[node name="Camera2D" type="Camera2D" parent="Elf"]
+[node name="Camera2D" type="Camera2D" parent="TileMapObjects/Elf"]
 zoom = Vector2(3, 3)
 
+[node name="Trunk" parent="TileMapObjects" node_paths=PackedStringArray("log_container") instance=ExtResource("6_ig0dx")]
+position = Vector2(160, -7)
+log_container = NodePath("..")
+
+[node name="PointLight2D" type="PointLight2D" parent="TileMapObjects/Trunk"]
+position = Vector2(0, 14)
+texture = SubResource("GradientTexture2D_bfuo6")
+
 [node name="DayCycleModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0, 0.108, 0.27, 1)
 script = ExtResource("4_7nv66")
 seconds_per_day = 60.0
 color_gradient = SubResource("Gradient_mjdyu")
 
-[node name="Trunk" parent="." node_paths=PackedStringArray("log_container") instance=ExtResource("6_ig0dx")]
-position = Vector2(160, -7)
-log_container = NodePath("..")
-
-[node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(160, 7)
-texture = SubResource("GradientTexture2D_bfuo6")
-
-[connection signal="pickup_requested" from="." to="Elf" method="_on_pickup_requested"]
+[connection signal="pickup_requested" from="." to="TileMapObjects/Elf" method="_on_pickup_requested"]

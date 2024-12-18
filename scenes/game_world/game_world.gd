@@ -15,6 +15,7 @@ const DEATH_REASON_FROZEN : StringName = &"Frozen"
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
+@export var object_container : Node2D = null:		set=set_object_container
 @export_range(1, 10) var max_logs : int = 5
 
 # ------------------------------------------------------------------------------
@@ -36,14 +37,19 @@ static var _Instance : GameWorld = null
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
-
+func set_object_container(oc : Node2D) -> void:
+	if oc != object_container:
+		_DisconnectObjectContainer()
+		object_container = oc
+		_ConnectObjectContainer()
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	child_entered_tree.connect(_on_child_entered_tree)
-	child_exiting_tree.connect(_on_child_exiting_tree)
+	pass
+	#child_entered_tree.connect(_on_child_entered_tree)
+	#child_exiting_tree.connect(_on_child_exiting_tree)
 
 func _enter_tree() -> void:
 	if _Instance == null:
@@ -56,10 +62,24 @@ func _exit_tree() -> void:
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
+func _ConnectObjectContainer() -> void:
+	if object_container == null: return
+	if not object_container.child_entered_tree.is_connected(_on_child_entered_tree):
+		object_container.child_entered_tree.connect(_on_child_entered_tree)
+	if not object_container.child_exiting_tree.is_connected(_on_child_exiting_tree):
+		object_container.child_exiting_tree.connect(_on_child_exiting_tree)
+
+func _DisconnectObjectContainer() -> void:
+	if object_container == null: return
+	if object_container.child_entered_tree.is_connected(_on_child_entered_tree):
+		object_container.child_entered_tree.disconnect(_on_child_entered_tree)
+	if object_container.child_exiting_tree.is_connected(_on_child_exiting_tree):
+		object_container.child_exiting_tree.disconnect(_on_child_exiting_tree)
 
 func _AddLog(child : Log) -> void:
+	if object_container == null: return
 	if _logs.size() == max_logs:
-		remove_child(_logs[0])
+		object_container.remove_child(_logs[0])
 	_logs.append(child)
 
 func _RemoveLog(child : Log) -> void:
@@ -84,5 +104,3 @@ func _on_child_entered_tree(child : Node) -> void:
 func _on_child_exiting_tree(child : Node) -> void:
 	if child is Log:
 		_RemoveLog(child)
-
-

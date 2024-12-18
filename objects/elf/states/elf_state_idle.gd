@@ -15,6 +15,7 @@ const ANIM_BLINK : StringName = &"blink"
 const TRANSITION_MOVE : StringName = &"Move"
 const TRANSITION_CHOP : StringName = &"Chop"
 const TRANSITION_PICKUP : StringName = &"Pickup"
+const TRANSITION_PUTDOWN : StringName = &"Putdown"
 
 const ACTION_NO_BLINK : StringName = &"no_blink"
 const ACTION_BLINK : StringName = &"blink"
@@ -44,10 +45,20 @@ func _HandleInteraction() -> void:
 	if interactable != null:
 		match interactable.type:
 			Interactable.IType.TRUNK:
-				transition.emit(TRANSITION_CHOP)
+				if not host.is_carrying():
+					transition.emit(TRANSITION_CHOP)
 			Interactable.IType.PICKUP:
 				if not host.is_carrying():
 					transition.emit(TRANSITION_PICKUP)
+			Interactable.IType.FIRE:
+				if host.get_carrying() is Log:
+					host.free_carrying()
+					interactable.interact()
+			Interactable.IType.WOOD_STATION:
+				if host.get_carrying() is Log:
+					transition.emit(TRANSITION_PUTDOWN)
+				else:
+					transition.emit(TRANSITION_CHOP)
 			Interactable.IType.MISC:
 				interactable.interact()
 	elif host.is_carrying():
