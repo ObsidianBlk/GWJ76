@@ -1,27 +1,32 @@
-extends ElfState
-class_name ElfStateChop
+extends Node2D
+class_name GameWorld
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-
+signal pickup_requested(item : Node2D)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-const ANIM_CHOP : StringName = &"chop"
-
-const TRANSITION_STATE : StringName = &"Idle"
+const DEATH_REASON_CAPTURED : StringName = &"Captured"
+const DEATH_REASON_FROZEN : StringName = &"Frozen"
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-
+@export_range(1, 10) var max_logs : int = 5
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _interactable : Interactable = null
+var _logs : Array[Log] = []
+
+
+# ------------------------------------------------------------------------------
+# Static Variables
+# ------------------------------------------------------------------------------
+static var _Instance : GameWorld = null
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -36,34 +41,48 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
+func _ready() -> void:
+	child_entered_tree.connect(_on_child_entered_tree)
+	child_exiting_tree.connect(_on_child_exiting_tree)
 
+func _enter_tree() -> void:
+	if _Instance == null:
+		_Instance = self
+
+func _exit_tree() -> void:
+	if _Instance == self:
+		_Instance = null
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
 
+func _AddLog(child : Log) -> void:
+	if _logs.size() == max_logs:
+		remove_child(_logs[0])
+	_logs.append(child)
+
+func _RemoveLog(child : Log) -> void:
+	var idx : int = _logs.find(child)
+	if idx >= 0:
+		_logs.remove_at(idx)
 
 # ------------------------------------------------------------------------------
-# Public Methods
+# Public Static Methods
 # ------------------------------------------------------------------------------
-func enter(payload : Variant = null) -> void:
-	if host == null: return
-	if interact_component == null: return
-	_interactable = interact_component.get_interactable()
-	if _interactable != null:
-		host.animation_finished.connect(_on_host_animation_finished)
-		play_animation(ANIM_CHOP)
-	else:
-		transition.emit(TRANSITION_STATE)
-
-func exit() -> void:
-	host.animation_finished.disconnect(_on_host_animation_finished)
+static func Request_Pickup(item : Node2D) -> void:
+	if _Instance != null:
+		_Instance.pickup_requested.emit(item)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_host_animation_finished(anim_name : StringName) -> void:
-	if anim_name.begins_with(ANIM_CHOP):
-		if _interactable != null:
-			_interactable.interact()
-		transition.emit(TRANSITION_STATE)
+func _on_child_entered_tree(child : Node) -> void:
+	if child is Log:
+		_AddLog(child)
+
+func _on_child_exiting_tree(child : Node) -> void:
+	if child is Log:
+		_RemoveLog(child)
+
+

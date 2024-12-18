@@ -44,7 +44,7 @@ func _HandleInteraction() -> void:
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func enter() -> void:
+func enter(payload : Variant = null) -> void:
 	if host == null: return
 	_idirection.x = Input.get_axis(&"game.move_left", &"game.move_right")
 	_idirection.y = Input.get_axis(&"game.move_up", &"game.move_down")

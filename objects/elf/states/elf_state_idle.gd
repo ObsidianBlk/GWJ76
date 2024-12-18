@@ -41,21 +41,22 @@ var _blink_check : float = BLINK_CHECK_DELAY
 func _HandleInteraction() -> void:
 	if interact_component == null: return
 	var interactable : Interactable = interact_component.get_interactable()
-	if interactable == null: return
-	
-	match interactable.type:
-		Interactable.IType.TRUNK:
-			transition.emit(TRANSITION_CHOP)
-		Interactable.IType.PICKUP:
-			if not host.is_carrying():
-				transition.emit(TRANSITION_PICKUP)
-		Interactable.IType.MISC:
-			interactable.interact()
+	if interactable != null:
+		match interactable.type:
+			Interactable.IType.TRUNK:
+				transition.emit(TRANSITION_CHOP)
+			Interactable.IType.PICKUP:
+				if not host.is_carrying():
+					transition.emit(TRANSITION_PICKUP)
+			Interactable.IType.MISC:
+				interactable.interact()
+	elif host.is_carrying():
+		host.throw_carrying()
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func enter() -> void:
+func enter(payload : Variant = null) -> void:
 	if host == null: return
 	host.animation_finished.connect(_on_host_animation_finished)
 	play_animation(ANIM_IDLE)
@@ -74,6 +75,8 @@ func update(delta : float) -> void:
 func handle_input(event : InputEvent) -> void:
 	if event.is_action_pressed(&"game.interact"):
 		_HandleInteraction()
+	if event.is_action_pressed(&"game.show_body_temp"):
+		host.show_body_temp()
 	if is_event_action(event, [&"game.move_up", &"game.move_down", &"game.move_left", &"game.move_right"]):
 		transition.emit(TRANSITION_MOVE)
 

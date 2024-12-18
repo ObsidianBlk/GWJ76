@@ -15,15 +15,15 @@ vec4 fire(vec2 uv){
 	float noise = texture(noise_texture, uv2).r;
 	float gradient = texture(gradient_texture, uv.yx).r;
 	gradient -= smoothstep(spread, spread + 0.5, length(uv - vec2(0.5, 0.5)) / spread);
-	
+
 	float step1 = step(noise, gradient);
 	float step2 = step(noise, gradient - 0.2);
 	float step3 = step(noise, gradient - 0.4);
-	
+
 	vec3 hlcolor = mix(color_high, color_low, step1 - step2);
 	vec4 color = vec4(hlcolor, step1);
 	color.rgb = mix(color.rgb, color_mid, step2 - step3);
-	
+
 	return color;
 }
 

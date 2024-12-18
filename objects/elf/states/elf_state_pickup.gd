@@ -17,7 +17,7 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func enter() -> void:
+func enter(payload : Variant = null) -> void:
 	if host == null: return
 	if interact_component == null: return
 	_interactable = interact_component.get_interactable()

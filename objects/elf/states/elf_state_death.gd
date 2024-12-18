@@ -1,5 +1,5 @@
 extends ElfState
-class_name ElfStateChop
+class_name ElfStateDeath
 
 # ------------------------------------------------------------------------------
 # Signals
@@ -9,9 +9,7 @@ class_name ElfStateChop
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-const ANIM_CHOP : StringName = &"chop"
-
-const TRANSITION_STATE : StringName = &"Idle"
+const ANIM_DEATH : StringName = &"death"
 
 # ------------------------------------------------------------------------------
 # Export Variables
@@ -21,7 +19,7 @@ const TRANSITION_STATE : StringName = &"Idle"
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _interactable : Interactable = null
+var _reason : StringName = &""
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -41,29 +39,24 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-
+func _RequestDeath() -> void:
+	host.dead.emit(_reason)
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
 func enter(payload : Variant = null) -> void:
 	if host == null: return
-	if interact_component == null: return
-	_interactable = interact_component.get_interactable()
-	if _interactable != null:
-		host.animation_finished.connect(_on_host_animation_finished)
-		play_animation(ANIM_CHOP)
-	else:
-		transition.emit(TRANSITION_STATE)
-
-func exit() -> void:
-	host.animation_finished.disconnect(_on_host_animation_finished)
+	if typeof(payload) == TYPE_STRING_NAME:
+		_reason = payload
+	host.animation_finished.connect(_on_host_animation_finished)
+	play_animation(ANIM_DEATH)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
 func _on_host_animation_finished(anim_name : StringName) -> void:
-	if anim_name.begins_with(ANIM_CHOP):
-		if _interactable != null:
-			_interactable.interact()
-		transition.emit(TRANSITION_STATE)
+	if anim_name.begins_with(ANIM_DEATH):
+		_RequestDeath.call_deferred()
+
+

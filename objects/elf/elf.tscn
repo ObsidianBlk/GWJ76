@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://cay4hlqqt2x2p"]
+[gd_scene load_steps=64 format=3 uid="uid://cay4hlqqt2x2p"]
 
 [ext_resource type="Script" path="res://objects/elf/elf.gd" id="1_kmnh1"]
 [ext_resource type="Texture2D" uid="uid://ibraj4lujg1h" path="res://assets/graphics/character.png" id="1_mn771"]
@@ -9,6 +9,11 @@
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_chop.gd" id="7_clem8"]
 [ext_resource type="Script" path="res://scripts/nodes/interact_component.gd" id="7_s2qci"]
 [ext_resource type="Script" path="res://objects/elf/states/elf_state_pickup.gd" id="8_0qeo5"]
+[ext_resource type="Script" path="res://objects/elf/states/elf_state_death.gd" id="9_gi08a"]
+[ext_resource type="Script" path="res://scripts/nodes/temperature_component.gd" id="10_cb8c3"]
+[ext_resource type="Texture2D" uid="uid://dqysnk3crkhvx" path="res://assets/graphics/tex_progress_bars/temperature_progress_bar_under.png" id="12_ydndl"]
+[ext_resource type="Texture2D" uid="uid://bmry650fke4am" path="res://assets/graphics/tex_progress_bars/temperature_progress_bar_over.png" id="13_r3ers"]
+[ext_resource type="Texture2D" uid="uid://dbno2fsygqwpn" path="res://assets/graphics/tex_progress_bars/progress_bar_10x6.png" id="14_aoxe1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wrfw2"]
 atlas = ExtResource("1_mn771")
@@ -397,6 +402,26 @@ radius = 4.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_fvx7f"]
 radius = 6.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_py61d"]
+radius = 6.0
+
+[sub_resource type="Curve" id="Curve_n574g"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xjrhs"]
+width = 64
+curve = SubResource("Curve_n574g")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_3451p"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 2.0
+gravity = Vector3(0, -12, 0)
+alpha_curve = SubResource("CurveTexture_xjrhs")
+hue_variation_min = -2.23517e-08
+hue_variation_max = -2.23517e-08
+
 [node name="Elf" type="CharacterBody2D"]
 script = ExtResource("1_kmnh1")
 
@@ -406,10 +431,14 @@ texture_filter = 3
 texture = ExtResource("2_s43ie")
 offset = Vector2(0, -6)
 
+[node name="CarryContainer" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -20)
+
 [node name="ASprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 3
 sprite_frames = SubResource("SpriteFrames_ulab5")
-animation = &"chop_up"
+animation = &"idle_down"
 offset = Vector2(0, -8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -417,6 +446,7 @@ position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_cvyvr")
 
 [node name="StateMachine" type="Node" parent="."]
+unique_name_in_owner = true
 script = ExtResource("2_1q5qg")
 initial_state = &"Idle"
 
@@ -432,9 +462,46 @@ script = ExtResource("7_clem8")
 [node name="Pickup" type="Node" parent="StateMachine"]
 script = ExtResource("8_0qeo5")
 
+[node name="Death" type="Node" parent="StateMachine"]
+script = ExtResource("9_gi08a")
+
 [node name="InteractComponent" type="Area2D" parent="." groups=["PlayerInteractComp"]]
 script = ExtResource("7_s2qci")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractComponent"]
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_fvx7f")
+
+[node name="TemperatureComponent" type="Area2D" parent="."]
+script = ExtResource("10_cb8c3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TemperatureComponent"]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_py61d")
+
+[node name="TemperatureBar" type="TextureProgressBar" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 8)
+offset_left = -8.0
+offset_top = 1.0
+offset_right = 8.0
+offset_bottom = 9.0
+max_value = 1000.0
+stretch_margin_left = 5
+stretch_margin_top = 2
+stretch_margin_right = 1
+stretch_margin_bottom = 2
+texture_under = ExtResource("12_ydndl")
+texture_over = ExtResource("13_r3ers")
+texture_progress = ExtResource("14_aoxe1")
+texture_progress_offset = Vector2(5, 2)
+tint_progress = Color(0.541176, 0.811765, 0.858824, 1)
+
+[node name="BreathParticles" type="GPUParticles2D" parent="."]
+visible = false
+position = Vector2(0, -10)
+process_material = SubResource("ParticleProcessMaterial_3451p")
+explosiveness = 0.86
+randomness = 0.25
+
+[connection signal="body_temp_changed" from="TemperatureComponent" to="." method="_on_body_temp_changed"]

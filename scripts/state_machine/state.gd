@@ -10,7 +10,7 @@ signal transition(state_name : StringName)
 # ------------------------------------------------------------------------------
 # Virtual Methods
 # ------------------------------------------------------------------------------
-func enter() -> void:
+func enter(payload : Variant = null) -> void:
 	pass
 
 func exit() -> void:

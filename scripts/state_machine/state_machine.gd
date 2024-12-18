@@ -51,13 +51,20 @@ func _DisconnectChildState(child : State) -> void:
 
 
 # ------------------------------------------------------------------------------
+# Public Methods
+# ------------------------------------------------------------------------------
+func transition_state(state_name : StringName, payload : Variant = null) -> int:
+	if not state_name in _states: return ERR_DOES_NOT_EXIST
+	if _states[state_name] == _current: return OK
+	if _current != null:
+		_current.exit()
+		_current = null
+	_current = _states[state_name]
+	_current.enter(payload)
+	return OK
+
+# ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_child_transition(state_name : StringName) -> void:
-	if state_name in _states:
-		if _states[state_name] == _current: return
-		if _current != null:
-			_current.exit()
-			_current = null
-		_current = _states[state_name]
-		_current.enter()
+func _on_child_transition(state_name : StringName, payload : Variant = null) -> void:
+	transition_state(state_name, payload)

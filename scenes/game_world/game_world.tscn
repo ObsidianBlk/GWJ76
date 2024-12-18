@@ -1,11 +1,16 @@
-[gd_scene load_steps=10 format=4 uid="uid://k721ga0i20fb"]
+[gd_scene load_steps=13 format=4 uid="uid://k721ga0i20fb"]
 
 [ext_resource type="TileSet" uid="uid://dx3u8ly6mu55n" path="res://assets/graphics/tileset.tres" id="1_2t3lj"]
+[ext_resource type="Script" path="res://scenes/game_world/game_world.gd" id="1_622l6"]
+[ext_resource type="Script" path="res://scripts/nodes/heater_component.gd" id="2_0mtnx"]
 [ext_resource type="PackedScene" uid="uid://bfttq6uydsree" path="res://objects/firepit/firepit.tscn" id="2_1hcvr"]
 [ext_resource type="PackedScene" uid="uid://cay4hlqqt2x2p" path="res://objects/elf/elf.tscn" id="3_bk3ur"]
 [ext_resource type="Script" path="res://scripts/nodes/day_cycle_modulate.gd" id="4_7nv66"]
 [ext_resource type="PackedScene" uid="uid://cvnehmqwtuemd" path="res://objects/door/door.tscn" id="5_grfw8"]
 [ext_resource type="PackedScene" uid="uid://d3udbdg0xb2i4" path="res://objects/trunk/trunk.tscn" id="6_ig0dx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ulgvc"]
+size = Vector2(2048, 2048)
 
 [sub_resource type="Gradient" id="Gradient_mjdyu"]
 offsets = PackedFloat32Array(0, 0.0833333, 0.208333, 0.291667, 0.625, 0.666667, 0.75)
@@ -26,6 +31,16 @@ fill_from = Vector2(0.5, 0.5)
 
 [node name="GameWorld" type="Node2D"]
 y_sort_enabled = true
+script = ExtResource("1_622l6")
+
+[node name="WorldHeater" type="Area2D" parent="."]
+visible = false
+script = ExtResource("2_0mtnx")
+heat_value = -10.0
+variance = 0.25
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorldHeater"]
+shape = SubResource("RectangleShape2D_ulgvc")
 
 [node name="TileMapGround" type="TileMapLayer" parent="."]
 z_index = -2
@@ -44,6 +59,13 @@ position = Vector2(16, 80)
 
 [node name="Firepit" parent="." instance=ExtResource("2_1hcvr")]
 position = Vector2(8, 25)
+
+[node name="HeaterComponent" type="Area2D" parent="Firepit"]
+script = ExtResource("2_0mtnx")
+heat_value = 40.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Firepit/HeaterComponent"]
+polygon = PackedVector2Array(-8, -25, -8, 39, 58, 39, 58, -25)
 
 [node name="Elf" parent="." instance=ExtResource("3_bk3ur")]
 position = Vector2(49, 49)
@@ -64,3 +86,5 @@ log_container = NodePath("..")
 [node name="PointLight2D" type="PointLight2D" parent="."]
 position = Vector2(160, 7)
 texture = SubResource("GradientTexture2D_bfuo6")
+
+[connection signal="pickup_requested" from="." to="Elf" method="_on_pickup_requested"]

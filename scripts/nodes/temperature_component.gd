@@ -1,27 +1,26 @@
-extends ElfState
-class_name ElfStateChop
+extends Area2D
+class_name TemperatureComponent
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-
+signal body_temp_changed(body_temp : float)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-const ANIM_CHOP : StringName = &"chop"
-
-const TRANSITION_STATE : StringName = &"Idle"
+const MIN_STAMINA : float = 0.0
+const MAX_STAMINA : float = 1000.0
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
 
-
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _interactable : Interactable = null
+var _accum : float = 0.0
+var _body_temp : float = 1000.0
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -36,7 +35,12 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-
+func _process(delta: float) -> void:
+	var _old : float = _body_temp
+	_body_temp = clampf(_body_temp + (_accum * delta), MIN_STAMINA, MAX_STAMINA)
+	_accum = 0.0
+	if not is_equal_approx(_body_temp, _old):
+		body_temp_changed.emit(_body_temp)
 
 # ------------------------------------------------------------------------------
 # Private Methods
@@ -46,24 +50,12 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func enter(payload : Variant = null) -> void:
-	if host == null: return
-	if interact_component == null: return
-	_interactable = interact_component.get_interactable()
-	if _interactable != null:
-		host.animation_finished.connect(_on_host_animation_finished)
-		play_animation(ANIM_CHOP)
-	else:
-		transition.emit(TRANSITION_STATE)
-
-func exit() -> void:
-	host.animation_finished.disconnect(_on_host_animation_finished)
+func add_temperature(amount : float) -> void:
+	_accum += amount
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_host_animation_finished(anim_name : StringName) -> void:
-	if anim_name.begins_with(ANIM_CHOP):
-		if _interactable != null:
-			_interactable.interact()
-		transition.emit(TRANSITION_STATE)
+
+
+

@@ -1,27 +1,26 @@
-extends ElfState
-class_name ElfStateChop
+extends Area2D
+class_name HeaterComponent
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-
+signal temperature(amount : float)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-const ANIM_CHOP : StringName = &"chop"
 
-const TRANSITION_STATE : StringName = &"Idle"
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-
+@export var heat_value : float = 20.0
+@export var variance : float = 0.2
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _interactable : Interactable = null
+
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -36,34 +35,37 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
+func _ready() -> void:
+	area_entered.connect(_on_area_entered)
+	area_exited.connect(_on_area_exited)
 
+func _process(delta: float) -> void:
+	temperature.emit(_GetTemperature())
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-
+func _GetTemperature() -> float:
+	var heat_variance : float = randf_range(-variance, variance)
+	var adj : float = heat_value * heat_variance
+	return heat_value + adj
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func enter(payload : Variant = null) -> void:
-	if host == null: return
-	if interact_component == null: return
-	_interactable = interact_component.get_interactable()
-	if _interactable != null:
-		host.animation_finished.connect(_on_host_animation_finished)
-		play_animation(ANIM_CHOP)
-	else:
-		transition.emit(TRANSITION_STATE)
 
-func exit() -> void:
-	host.animation_finished.disconnect(_on_host_animation_finished)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_host_animation_finished(anim_name : StringName) -> void:
-	if anim_name.begins_with(ANIM_CHOP):
-		if _interactable != null:
-			_interactable.interact()
-		transition.emit(TRANSITION_STATE)
+func _on_area_entered(area : Area2D) -> void:
+	if area is TemperatureComponent:
+		if not temperature.is_connected(area.add_temperature):
+			temperature.connect(area.add_temperature)
+
+func _on_area_exited(area : Area2D) -> void:
+	if area is TemperatureComponent:
+		if temperature.is_connected(area.add_temperature):
+			temperature.disconnect(area.add_temperature)
+
+
