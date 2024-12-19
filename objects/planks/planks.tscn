@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://h7eyky88h48v"]
+
+[ext_resource type="Texture2D" uid="uid://dl3ks270b1404" path="res://assets/graphics/objects.png" id="1_jhejw"]
+[ext_resource type="Script" path="res://objects/planks/planks.gd" id="1_t0wei"]
+[ext_resource type="Script" path="res://scripts/nodes/interactable.gd" id="2_pueao"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vf8l8"]
+radius = 4.0
+
+[node name="Planks" type="Node2D" node_paths=PackedStringArray("interactable")]
+script = ExtResource("1_t0wei")
+interactable = NodePath("Interactable")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_jhejw")
+offset = Vector2(0, -6)
+region_enabled = true
+region_rect = Rect2(64, 16, 16, 15)
+
+[node name="Interactable" type="Area2D" parent="."]
+script = ExtResource("2_pueao")
+type = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_vf8l8")
+
+[connection signal="interacted" from="Interactable" to="." method="_on_interacted"]

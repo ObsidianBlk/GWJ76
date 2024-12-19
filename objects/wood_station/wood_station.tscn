@@ -31,6 +31,7 @@ position = Vector2(0, -6)
 [node name="Interactable_Top" type="Area2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_xxypd")
+type = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Top"]
 position = Vector2(0, -8)
@@ -39,12 +40,15 @@ shape = SubResource("RectangleShape2D_7nd6c")
 [node name="Interactable_Bottom" type="Area2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("2_xxypd")
+type = 4
+interactable = false
+placeable = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Bottom"]
 position = Vector2(0, 8)
 shape = SubResource("RectangleShape2D_7nd6c")
 
-[connection signal="interacted" from="Interactable_Top" to="." method="_on_interacted"]
+[connection signal="interacted" from="Interactable_Top" to="." method="_on_interacted" binds= [&"DOWN"]]
 [connection signal="placed" from="Interactable_Top" to="." method="_on_placed"]
-[connection signal="interacted" from="Interactable_Bottom" to="." method="_on_interacted"]
+[connection signal="interacted" from="Interactable_Bottom" to="." method="_on_interacted" binds= [&"UP"]]
 [connection signal="placed" from="Interactable_Bottom" to="." method="_on_placed"]

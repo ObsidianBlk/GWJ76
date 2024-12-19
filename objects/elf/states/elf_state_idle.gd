@@ -48,21 +48,24 @@ func _HandleInteraction() -> void:
 				if not host.is_carrying():
 					transition.emit(TRANSITION_CHOP)
 			Interactable.IType.PICKUP:
-				if not host.is_carrying():
+				if not host.is_carrying() and interactable.interactable:
 					transition.emit(TRANSITION_PICKUP)
 			Interactable.IType.FIRE:
 				if host.get_carrying() is Log:
-					host.free_carrying()
+					host.free_carrying(true)
 					interactable.interact()
 			Interactable.IType.WOOD_STATION:
 				if host.get_carrying() is Log:
 					transition.emit(TRANSITION_PUTDOWN)
-				else:
+				elif interactable.interactable:
 					transition.emit(TRANSITION_CHOP)
+			Interactable.IType.WINDOW:
+				if host.get_carrying() is Planks and interactable.interactable:
+					transition.emit(TRANSITION_PICKUP, true)
 			Interactable.IType.MISC:
 				interactable.interact()
 	elif host.is_carrying():
-		host.throw_carrying()
+		host.throw_carrying(facing_name())
 
 # ------------------------------------------------------------------------------
 # Public Methods

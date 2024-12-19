@@ -1,5 +1,11 @@
 shader_type canvas_item;
 
+/*
+Pixel fire shader based on work from...
+https://godotshaders.com/shader/square-pixelation/
+https://godotshaders.com/shader/2d-fire/
+*/
+
 uniform sampler2D noise_texture : repeat_enable;
 uniform sampler2D gradient_texture;
 

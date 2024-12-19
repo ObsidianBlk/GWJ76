@@ -1,30 +1,20 @@
-extends Area2D
-class_name Interactable
+@tool
+extends Node2D
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal interacted()
-signal placed(item : Node2D)
+
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-enum IType {
-	MISC=0,
-	PICKUP=1,
-	TRUNK=2,
-	FIRE=3,
-	WOOD_STATION=4,
-	WINDOW=5,
-}
+
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var type : IType = IType.MISC
-@export var interactable : bool = true
-@export var placeable : bool = false
+@export var broken : bool = false:			set=set_broken
 
 # ------------------------------------------------------------------------------
 # Variables
@@ -34,37 +24,37 @@ enum IType {
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
+@onready var _window_broken_sprite: Sprite2D = %WindowBrokenSprite
 
 
-	
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
-
+func set_broken(b : bool) -> void:
+	if b != broken:
+		broken = b
+		_UpdateSprites()
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-
+func _ready() -> void:
+	_UpdateSprites()
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-
-	
-
+func _UpdateSprites() -> void:
+	if _window_broken_sprite == null: return
+	_window_broken_sprite.visible = broken
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func interact() -> void:
-	if interactable:
-		interacted.emit()
 
-func place(item : Node2D) -> void:
-	if placeable:
-		placed.emit(item)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
+func _on_interactable_interacted() -> void:
+	broken = false

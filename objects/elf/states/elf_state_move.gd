@@ -13,6 +13,8 @@ const ANIM_WALK = &"walk"
 
 const TRANSITION_IDLE : StringName = &"Idle"
 const TRANSITION_CHOP : StringName = &"Chop"
+const TRANSITION_PICKUP : StringName = &"Pickup"
+const TRANSITION_PUTDOWN : StringName = &"Putdown"
 
 # ------------------------------------------------------------------------------
 # Export Variables
@@ -32,14 +34,32 @@ var _idirection : Vector2 = Vector2.ZERO
 func _HandleInteraction() -> void:
 	if interact_component == null: return
 	var interactable : Interactable = interact_component.get_interactable()
-	if interactable == null: return
-	
-	match interactable.type:
-		Interactable.IType.TRUNK:
-			host.velocity = Vector2.ZERO
-			transition.emit(TRANSITION_CHOP)
-		Interactable.IType.MISC:
-			interactable.interact()
+	if interactable != null:
+		match interactable.type:
+			Interactable.IType.TRUNK:
+				host.velocity = Vector2.ZERO
+				if not host.is_carrying():
+					transition.emit(TRANSITION_CHOP)
+			Interactable.IType.PICKUP:
+				host.velocity = Vector2.ZERO
+				if not host.is_carrying() and interactable.interactable:
+					transition.emit(TRANSITION_PICKUP)
+			Interactable.IType.FIRE:
+				host.velocity = Vector2.ZERO
+				if host.get_carrying() is Log:
+					host.free_carrying(true)
+					interactable.interact()
+			Interactable.IType.WOOD_STATION:
+				host.velocity = Vector2.ZERO
+				if host.get_carrying() is Log:
+					transition.emit(TRANSITION_PUTDOWN)
+				elif interactable.interactable:
+					transition.emit(TRANSITION_CHOP)
+			Interactable.IType.MISC:
+				host.velocity = Vector2.ZERO
+				interactable.interact()
+	elif host.is_carrying():
+		host.throw_carrying(facing_name())
 
 # ------------------------------------------------------------------------------
 # Public Methods
@@ -68,10 +88,7 @@ func physics_update(_delta : float) -> void:
 
 func handle_input(event : InputEvent) -> void:
 	if event.is_action_pressed(&"game.interact"):
-		if interact_component != null:
-			var interactable : Interactable = interact_component.get_interactable()
-			if interactable != null:
-				interactable.interact()
+		_HandleInteraction()
 	if is_event_action(event, [&"game.move_left", &"game.move_right"]):
 		_idirection.x = Input.get_axis(&"game.move_left", &"game.move_right")
 	if is_event_action(event, [&"game.move_up", &"game.move_down"]):

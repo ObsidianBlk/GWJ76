@@ -11,10 +11,10 @@
 radius = 3.0
 height = 20.0
 
-[sub_resource type="Gradient" id="Gradient_uanow"]
+[sub_resource type="Gradient" id="Gradient_h5ou7"]
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_44ktr"]
-gradient = SubResource("Gradient_uanow")
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0gytn"]
+gradient = SubResource("Gradient_h5ou7")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_g23jc"]
 noise_type = 4
@@ -34,7 +34,7 @@ shader_parameter/color_low = Color(0.631373, 0.137255, 0.301961, 1)
 shader_parameter/spread = 0.6
 shader_parameter/pixel_size = 1
 shader_parameter/noise_texture = SubResource("NoiseTexture2D_0irtd")
-shader_parameter/gradient_texture = SubResource("GradientTexture2D_44ktr")
+shader_parameter/gradient_texture = SubResource("GradientTexture2D_0gytn")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_4r422"]
 
@@ -63,7 +63,6 @@ region_rect = Rect2(0, 0, 32, 32)
 
 [node name="FireLight" type="PointLight2D" parent="."]
 unique_name_in_owner = true
-energy = 0.946433
 shadow_enabled = true
 texture = ExtResource("5_k6x68")
 script = ExtResource("6_dw5ko")

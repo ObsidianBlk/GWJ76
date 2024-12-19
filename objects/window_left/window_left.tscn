@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://bqlnj1ceijsvd"]
+
+[ext_resource type="Script" path="res://objects/window_left/window_left.gd" id="1_8enk1"]
+[ext_resource type="Texture2D" uid="uid://dl3ks270b1404" path="res://assets/graphics/objects.png" id="1_wffnc"]
+[ext_resource type="Script" path="res://scripts/nodes/interactable.gd" id="3_vpxce"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wv7i8"]
+size = Vector2(8, 8)
+
+[node name="WindowLeft" type="Node2D"]
+script = ExtResource("1_8enk1")
+
+[node name="WindowWholeSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_wffnc")
+region_enabled = true
+region_rect = Rect2(80, 16, 16, 16)
+
+[node name="WindowBrokenSprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("1_wffnc")
+offset = Vector2(-8, 0)
+region_enabled = true
+region_rect = Rect2(96, 16, 32, 16)
+
+[node name="Interactable" type="Area2D" parent="."]
+script = ExtResource("3_vpxce")
+type = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
+position = Vector2(-12, 0)
+shape = SubResource("RectangleShape2D_wv7i8")
+
+[connection signal="interacted" from="Interactable" to="." method="_on_interactable_interacted"]

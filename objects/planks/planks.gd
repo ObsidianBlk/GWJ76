@@ -1,2 +1,3 @@
 extends PickupItem
-class_name Log
+class_name Planks
+

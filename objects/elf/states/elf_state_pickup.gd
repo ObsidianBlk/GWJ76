@@ -12,6 +12,7 @@ const TRANSITION_IDLE : StringName = &"Idle"
 # Variables
 # ------------------------------------------------------------------------------
 var _interactable : Interactable = null
+var _free_carrying : bool = false
 
 
 # ------------------------------------------------------------------------------
@@ -22,6 +23,8 @@ func enter(payload : Variant = null) -> void:
 	if interact_component == null: return
 	_interactable = interact_component.get_interactable()
 	if _interactable != null:
+		if typeof(payload) == TYPE_BOOL:
+			_free_carrying = payload
 		host.animation_looped.connect(_on_host_animation_looped)
 		play_animation(ANIM_WORK)
 	else:
@@ -35,6 +38,8 @@ func exit() -> void:
 # ------------------------------------------------------------------------------
 func _on_host_animation_looped(anim_name : StringName) -> void:
 	if anim_name.begins_with(ANIM_WORK):
+		if _free_carrying:
+			host.free_carrying(true)
 		if _interactable != null:
 			_interactable.interact()
 		transition.emit(TRANSITION_IDLE)

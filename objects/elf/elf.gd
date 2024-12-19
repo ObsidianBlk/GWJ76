@@ -13,6 +13,11 @@ signal animation_looped(anim_name : StringName)
 # ------------------------------------------------------------------------------
 const TRANSITION_DEATH : StringName = &"Death"
 
+const THROW_CURVE : Curve = preload("res://objects/elf/elf_throw_curve.tres")
+const THROW_HEIGHT_UP : float = -8.0
+const THROW_HEIGHT: float = 32.0
+const THROW_DISTANCE : float = 32.0
+
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
@@ -100,22 +105,42 @@ func is_carrying() -> bool:
 func get_carrying() -> Node2D:
 	return _carrying
 
-func throw_carrying() -> void:
+func throw_carrying(direction : StringName) -> void:
 	if _carrying == null: return
 	var parent : Node = get_parent()
 	if parent == null: return
 	
+	var throw_cmp : ThrowComponent = ThrowComponent.new()
+	throw_cmp.drop_curve = THROW_CURVE
+	var throw_height : float = THROW_HEIGHT
+	#var throw_distance : float = THROW_DISTANCE
+	match direction:
+		ElfState.FACING_NAME_LEFT:
+			throw_cmp.direction = ThrowComponent.Direction.LEFT
+		ElfState.FACING_NAME_RIGHT:
+			throw_cmp.direction = ThrowComponent.Direction.RIGHT
+		ElfState.FACING_NAME_UP:
+			throw_height = THROW_HEIGHT_UP
+			throw_cmp.direction = ThrowComponent.Direction.UP
+		ElfState.FACING_NAME_DOWN:
+			throw_cmp.direction = ThrowComponent.Direction.DOWN
+	throw_cmp.distance = THROW_DISTANCE
+	throw_cmp.height = throw_height
+	
 	_carry_container.remove_child(_carrying)
+	
+	_carrying.add_child(throw_cmp)
+	
 	parent.add_child(_carrying)
 	_carrying.position = _carry_container.global_position
 	_carrying = null
-	
-	# TODO: Add the ThrowComponent to send the item flying
+	throw_cmp.start()
 
-func free_carrying() -> void:
+func free_carrying(free : bool = false) -> void:
 	if _carrying == null: return
 	_carry_container.remove_child(_carrying)
-	_carrying.queue_free()
+	if free:
+		_carrying.queue_free()
 	_carrying = null
 
 # ------------------------------------------------------------------------------

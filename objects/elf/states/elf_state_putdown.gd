@@ -22,13 +22,15 @@ func enter(payload : Variant = null) -> void:
 	
 	_interactable = interact_component.get_interactable()
 	if host.is_carrying() and _interactable != null and _interactable.placeable:
-		host.animation_looped.connect(_on_host_animation_looped)
+		if not host.animation_looped.is_connected(_on_host_animation_looped):
+			host.animation_looped.connect(_on_host_animation_looped)
 		play_animation(ANIM_WORK)
 	else:
 		transition.emit(TRANSITION_IDLE)
 
 func exit() -> void:
-	host.animation_looped.disconnect(_on_host_animation_looped)
+	if host.animation_looped.is_connected(_on_host_animation_looped):
+		host.animation_looped.disconnect(_on_host_animation_looped)
 
 # ------------------------------------------------------------------------------
 # Handler Methods

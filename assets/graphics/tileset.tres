@@ -620,9 +620,19 @@ texture = ExtResource("2_i1gke")
 0:4/size_in_atlas = Vector2i(3, 5)
 0:4/0 = 0
 0:4/0/y_sort_origin = 36
+0:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-5.5625, 37, -1.0625, 39.375, 5.6875, 37, -0.1875, 35.375)
 3:4/size_in_atlas = Vector2i(3, 5)
 3:4/0 = 0
 3:4/0/y_sort_origin = 36
+3:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(0.5625, 39.75, -5.4375, 36.25, 0.1875, 33.75, 5.5625, 35.875)
+6:4/0 = 0
+6:4/0/y_sort_origin = 6
+8:4/0 = 0
+8:4/0/y_sort_origin = 6
+7:4/0 = 0
+7:4/0/y_sort_origin = 6
+9:4/0 = 0
+9:4/0/y_sort_origin = 6
 
 [resource]
 occlusion_layer_0/light_mask = 1
