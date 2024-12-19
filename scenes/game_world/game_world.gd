@@ -5,12 +5,16 @@ class_name GameWorld
 # Signals
 # ------------------------------------------------------------------------------
 signal pickup_requested(item : Node2D)
+signal weather_intensity_changed(intensity : float)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
 const DEATH_REASON_CAPTURED : StringName = &"Captured"
 const DEATH_REASON_FROZEN : StringName = &"Frozen"
+
+const WEATHER_CURVE : Curve = preload("res://scenes/game_world/weather_curve.tres")
+const WEATHER_VARIANCE : float = 0.2
 
 # ------------------------------------------------------------------------------
 # Export Variables
@@ -121,3 +125,12 @@ func _on_child_exiting_tree(child : Node) -> void:
 		_RemoveLog(child)
 	elif child is Planks:
 		_RemovePlank(child)
+
+func _on_daytime_changed(hour: float) -> void:
+	var point : float = hour / 24.0
+	var intensity : float = WEATHER_CURVE.sample(point)
+	if intensity > 0.15:
+		var variance : float = randf_range(-WEATHER_VARIANCE, WEATHER_VARIANCE)
+		intensity += (intensity * variance)
+	#print("Hour: ", floor(hour), " | Intensity: ", intensity)
+	weather_intensity_changed.emit(intensity)

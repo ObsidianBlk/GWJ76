@@ -1,75 +1,36 @@
 extends State
-class_name ElfState
-
-# ------------------------------------------------------------------------------
-# Signals
-# ------------------------------------------------------------------------------
+class_name KrampusState
 
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
 const META_FACING : StringName = &"facing"
+const META_TIME : StringName = &"time"
+
 const FACING_NAME_LEFT: StringName = &"left"
 const FACING_NAME_RIGHT: StringName = &"right"
 const FACING_NAME_UP: StringName = &"up"
 const FACING_NAME_DOWN: StringName = &"down"
 
-const GROUP_INTERACT_COMPONENT : StringName = &"PlayerInteractComp"
-
-# ------------------------------------------------------------------------------
-# Export Variables
-# ------------------------------------------------------------------------------
-
-
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var host : Elf = null
-var interact_component : InteractComponent = null
-
-# ------------------------------------------------------------------------------
-# Onready Variables
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-# Setters / Getters
-# ------------------------------------------------------------------------------
-
+var host : Krampus = null
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
 func _ready() -> void:
 	await owner.ready
-	if owner is Elf:
+	if owner is Krampus:
 		host = owner
-		var cmps : Array[Node] = get_tree().get_nodes_in_group(GROUP_INTERACT_COMPONENT)
-		for cmp : Node in cmps:
-			if cmp is InteractComponent and host.is_ancestor_of(cmp):
-				interact_component = cmp
-				break
-		if interact_component == null:
-			printerr("Failed to find interact component for ", host.name)
 	if host == null:
 		printerr("[", name, "]: Null Host Node")
-	
-
-# ------------------------------------------------------------------------------
-# Private Methods
-# ------------------------------------------------------------------------------
-
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func is_event_action(event : InputEvent, action_list : Array[StringName]) -> bool:
-	for action_name : StringName in action_list:
-		if event.is_action(action_name):
-			return true
-	return false
-
 func set_facing_from_velocity() -> void:
 	if host == null: return
 	if host.velocity.is_equal_approx(Vector2.ZERO): return
@@ -105,7 +66,3 @@ func is_playing(anim_name : StringName) -> bool:
 	if host == null: return false
 	var cur_anim : StringName = host.get_animation()
 	return cur_anim.begins_with(anim_name)
-
-# ------------------------------------------------------------------------------
-# Handler Methods
-# ------------------------------------------------------------------------------

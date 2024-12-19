@@ -4,6 +4,11 @@ class_name DayCycleModulate
 
 
 # ------------------------------------------------------------------------------
+# Signals
+# ------------------------------------------------------------------------------
+signal daytime_changed(hour : float)
+
+# ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
 @export var seconds_per_day : float = 1.0:				set=set_seconds_per_day
@@ -47,6 +52,7 @@ func _process(delta: float) -> void:
 	if _current_time >= seconds_per_day:
 		_current_time = fmod(_current_time, seconds_per_day)
 	hour = (_current_time / seconds_per_day) * 24.0
+	daytime_changed.emit(hour)
 
 # ------------------------------------------------------------------------------
 # Private Methods

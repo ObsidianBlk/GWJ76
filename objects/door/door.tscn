@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cvnehmqwtuemd"]
+[gd_scene load_steps=13 format=3 uid="uid://cvnehmqwtuemd"]
 
 [ext_resource type="Texture2D" uid="uid://yypgdyqt6n7v" path="res://assets/graphics/door.png" id="1_ghhbl"]
 [ext_resource type="Script" path="res://objects/door/door.gd" id="1_q8385"]
@@ -141,6 +141,12 @@ polygon = PackedVector2Array(0, -16, 0, -12, 16, -12, 16, -16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e7pqu"]
 size = Vector2(16, 8)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i7uy6"]
+size = Vector2(16, 7)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ol6i4"]
+size = Vector2(16, 7)
+
 [node name="Door" type="Node2D"]
 script = ExtResource("1_q8385")
 
@@ -182,5 +188,20 @@ script = ExtResource("2_firv1")
 position = Vector2(8, -20)
 shape = SubResource("RectangleShape2D_e7pqu")
 
+[node name="InsideArea" type="Area2D" parent="."]
+position = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InsideArea"]
+position = Vector2(8, -3.5)
+shape = SubResource("RectangleShape2D_i7uy6")
+
+[node name="OusideArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OusideArea"]
+position = Vector2(8, 3.5)
+shape = SubResource("RectangleShape2D_ol6i4")
+
 [connection signal="interacted" from="Interactable_South" to="." method="_on_interacted"]
 [connection signal="interacted" from="Interactable_North" to="." method="_on_interacted"]
+[connection signal="body_entered" from="InsideArea" to="." method="_on_inside_area_body_entered"]
+[connection signal="body_entered" from="OusideArea" to="." method="_on_ouside_area_body_entered"]

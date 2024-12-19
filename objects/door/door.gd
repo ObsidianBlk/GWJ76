@@ -3,7 +3,7 @@ extends Node2D
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-
+signal elf_outside(inside : bool)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
@@ -56,4 +56,10 @@ func _on_interacted() -> void:
 	else:
 		_anim.play(ANIM_OPEN)
 
+func _on_inside_area_body_entered(body: Node2D) -> void:
+	if body is Elf:
+		elf_outside.emit(false)
 
+func _on_ouside_area_body_entered(body: Node2D) -> void:
+	if body is Elf:
+		elf_outside.emit(true)

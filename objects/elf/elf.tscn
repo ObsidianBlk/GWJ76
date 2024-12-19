@@ -423,7 +423,7 @@ alpha_curve = SubResource("CurveTexture_xjrhs")
 hue_variation_min = -2.23517e-08
 hue_variation_max = -2.23517e-08
 
-[node name="Elf" type="CharacterBody2D"]
+[node name="Elf" type="CharacterBody2D" groups=["Elf"]]
 script = ExtResource("1_kmnh1")
 
 [node name="Shadow" type="Sprite2D" parent="."]
