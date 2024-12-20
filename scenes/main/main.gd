@@ -31,6 +31,7 @@ func _ready() -> void:
 	_ui.register_action_handler(UIAT.ACTION_QUIT_GAME, _QuitGame)
 	_ui.register_action_handler(UIAT.ACTION_START_SINGLEPLAYER, _StartGame)
 	_ui.register_action_handler(UIAT.ACTION_RESUME_GAME, _PauseGame.bind(false))
+	_LoadSettings()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"ui_cancel"):
@@ -42,6 +43,11 @@ func _input(event: InputEvent) -> void:
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
+func _LoadSettings() -> void:
+	if Settings.load() != OK:
+		Settings.request_reset()
+		Settings.save()
+
 func _QuitApplication() -> void:
 	get_tree().quit()
 

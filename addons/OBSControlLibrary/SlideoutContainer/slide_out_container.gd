@@ -317,4 +317,3 @@ func _on_viewport_size_changed() -> void:
 	#slide_amount = amount_hidden
 	#for cinfo : Dictionary in _child_info:
 		#_UpdateChildOffset(cinfo.node, amount_hidden)
-

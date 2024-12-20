@@ -35,7 +35,7 @@ func _on_btn_resume_pressed() -> void:
 
 func _on_btn_options_pressed() -> void:
 	if not options_menu.is_empty():
-		swap_ui(options_menu)
+		swap_ui(options_menu, false, {OPTION_PREVIOUS_MENU: name})
 
 func _on_btn_quit_pressed() -> void:
 	request(UIAT.ACTION_QUIT_GAME)

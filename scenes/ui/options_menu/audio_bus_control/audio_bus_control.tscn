@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://cl1bnx20330yx"]
+
+[ext_resource type="Script" path="res://scenes/ui/options_menu/audio_bus_control/audio_bus_control.gd" id="1_2480l"]
+
+[node name="AudioBusControl" type="VBoxContainer"]
+offset_left = 92.0
+offset_right = 220.0
+offset_bottom = 47.0
+script = ExtResource("1_2480l")
+
+[node name="Progress" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Slider_Value" type="HSlider" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+step = 0.2
+
+[connection signal="value_changed" from="Slider_Value" to="." method="_on_slider_value_changed"]
+[connection signal="value_changed" from="Slider_Value" to="Progress" method="set_value"]

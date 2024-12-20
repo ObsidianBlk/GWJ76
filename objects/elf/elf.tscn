@@ -628,8 +628,6 @@ fit_content = true
 scroll_active = false
 autowrap_mode = 0
 shortcut_keys_enabled = false
-visible_characters = 16
-visible_ratio = 2.28571
 
 [connection signal="interact_entered" from="InteractComponent" to="." method="_on_interact_changed"]
 [connection signal="interact_exited" from="InteractComponent" to="." method="_on_interact_changed"]

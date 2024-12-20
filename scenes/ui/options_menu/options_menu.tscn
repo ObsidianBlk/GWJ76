@@ -1,0 +1,108 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddi108jw4wku"]
+
+[ext_resource type="Script" path="res://scenes/ui/options_menu/options_menu.gd" id="1_idfm8"]
+[ext_resource type="Script" path="res://addons/OBSControlLibrary/SlideoutContainer/slide_out_container.gd" id="2_vvkk5"]
+[ext_resource type="PackedScene" uid="uid://cl1bnx20330yx" path="res://scenes/ui/options_menu/audio_bus_control/audio_bus_control.tscn" id="3_fpc6c"]
+
+[node name="OptionsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_idfm8")
+
+[node name="OptionsSlideout" type="Container" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_vvkk5")
+slide_duration = 0.5
+transition_type = 4
+ease_type = 2
+
+[node name="VLayout" type="VBoxContainer" parent="OptionsSlideout"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="OptionsSlideout/VLayout"]
+layout_mode = 2
+text = "Options"
+
+[node name="HSeparator" type="HSeparator" parent="OptionsSlideout/VLayout"]
+layout_mode = 2
+
+[node name="MainOptions" type="PanelContainer" parent="OptionsSlideout/VLayout"]
+layout_mode = 2
+
+[node name="OptionsGrid" type="GridContainer" parent="OptionsSlideout/VLayout/MainOptions"]
+layout_mode = 2
+columns = 3
+
+[node name="Columb_A" type="VBoxContainer" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid"]
+layout_mode = 2
+
+[node name="Columb_B" type="VBoxContainer" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid"]
+layout_mode = 2
+
+[node name="Label_Audio" type="Label" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B"]
+layout_mode = 2
+text = "Audio Volume"
+
+[node name="HSeparator" type="HSeparator" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B"]
+layout_mode = 2
+
+[node name="AudioControls" type="GridContainer" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B"]
+layout_mode = 2
+columns = 2
+
+[node name="Label_Master" type="Label" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B/AudioControls"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Master: "
+
+[node name="ABC_Master" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B/AudioControls" instance=ExtResource("3_fpc6c")]
+layout_mode = 2
+
+[node name="Label_Music" type="Label" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B/AudioControls"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Music:  "
+
+[node name="ABC_Music" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B/AudioControls" instance=ExtResource("3_fpc6c")]
+layout_mode = 2
+audio_bus = 1
+
+[node name="Label_SFX" type="Label" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B/AudioControls"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Music:  "
+
+[node name="ABC_SFX" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid/Columb_B/AudioControls" instance=ExtResource("3_fpc6c")]
+layout_mode = 2
+audio_bus = 2
+
+[node name="Columb_C" type="VBoxContainer" parent="OptionsSlideout/VLayout/MainOptions/OptionsGrid"]
+layout_mode = 2
+
+[node name="ButtonPanel" type="PanelContainer" parent="OptionsSlideout/VLayout"]
+layout_mode = 2
+
+[node name="HLayout" type="HBoxContainer" parent="OptionsSlideout/VLayout/ButtonPanel"]
+layout_mode = 2
+
+[node name="BTN_Apply" type="Button" parent="OptionsSlideout/VLayout/ButtonPanel/HLayout"]
+layout_mode = 2
+text = "Apply"
+
+[connection signal="pressed" from="OptionsSlideout/VLayout/ButtonPanel/HLayout/BTN_Apply" to="." method="_on_btn_apply_pressed"]

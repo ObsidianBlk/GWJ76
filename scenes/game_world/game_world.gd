@@ -38,6 +38,8 @@ static var _Instance : GameWorld = null
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
+@onready var _snow_overlay: ColorRect = %SnowOverlay
+@onready var _day_cycle_modulate: DayCycleModulate = %DayCycleModulate
 
 
 # ------------------------------------------------------------------------------
@@ -53,7 +55,8 @@ func set_object_container(oc : Node2D) -> void:
 # Override Methods
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	pass
+	_snow_overlay.visible = true
+	_day_cycle_modulate.visible = true
 	#child_entered_tree.connect(_on_child_entered_tree)
 	#child_exiting_tree.connect(_on_child_exiting_tree)
 
