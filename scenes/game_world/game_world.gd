@@ -10,8 +10,8 @@ signal weather_intensity_changed(intensity : float)
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-const DEATH_REASON_CAPTURED : StringName = &"Captured"
-const DEATH_REASON_FROZEN : StringName = &"Frozen"
+const DEATH_REASON_CAPTURED : StringName = &"captured"
+const DEATH_REASON_FROZEN : StringName = &"frozen"
 
 const WEATHER_CURVE : Curve = preload("res://scenes/game_world/weather_curve.tres")
 const WEATHER_VARIANCE : float = 0.2

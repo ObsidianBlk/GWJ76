@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://cay4hlqqt2x2p"]
+[gd_scene load_steps=73 format=3 uid="uid://cay4hlqqt2x2p"]
 
 [ext_resource type="Script" path="res://objects/elf/elf.gd" id="1_kmnh1"]
 [ext_resource type="Texture2D" uid="uid://ibraj4lujg1h" path="res://assets/graphics/character.png" id="1_mn771"]
@@ -87,6 +87,38 @@ region = Rect2(32, 320, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_b5odl"]
 atlas = ExtResource("1_mn771")
 region = Rect2(64, 320, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g48y4"]
+atlas = ExtResource("1_mn771")
+region = Rect2(0, 416, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b40fc"]
+atlas = ExtResource("1_mn771")
+region = Rect2(32, 416, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fhf62"]
+atlas = ExtResource("1_mn771")
+region = Rect2(64, 416, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_knmc7"]
+atlas = ExtResource("1_mn771")
+region = Rect2(96, 416, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pidk8"]
+atlas = ExtResource("1_mn771")
+region = Rect2(0, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tplcb"]
+atlas = ExtResource("1_mn771")
+region = Rect2(32, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m8pm0"]
+atlas = ExtResource("1_mn771")
+region = Rect2(64, 384, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f78j2"]
+atlas = ExtResource("1_mn771")
+region = Rect2(96, 384, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_11rd5"]
 atlas = ExtResource("1_mn771")
@@ -281,6 +313,40 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_g48y4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b40fc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fhf62")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_knmc7")
+}],
+"loop": false,
+"name": &"death_captured",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pidk8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tplcb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m8pm0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f78j2")
+}],
+"loop": false,
+"name": &"death_frozen",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_11rd5")
 }],
 "loop": false,
@@ -439,7 +505,7 @@ position = Vector2(0, -20)
 [node name="ASprite" type="AnimatedSprite2D" parent="."]
 texture_filter = 3
 sprite_frames = SubResource("SpriteFrames_ulab5")
-animation = &"idle_down"
+animation = &"death_captured"
 offset = Vector2(0, -8)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

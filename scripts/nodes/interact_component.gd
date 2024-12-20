@@ -64,6 +64,13 @@ func get_interactable(idx : int = 0) -> Interactable:
 		return _interactables[idx].get_ref()
 	return null
 
+func get_interactables() -> Array[Interactable]:
+	_CleanList()
+	var arr : Array[Interactable] = []
+	for act : WeakRef in _interactables:
+		arr.append(act.get_ref())
+	return arr
+
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------

@@ -8,10 +8,6 @@
 [ext_resource type="Script" path="res://objects/krampus/states/krampus_state_break.gd" id="6_g03o4"]
 [ext_resource type="Script" path="res://objects/krampus/states/krampus_state_retreat.gd" id="7_oswrj"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkgqk"]
-radius = 4.0
-height = 10.0
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_0i03t"]
 atlas = ExtResource("1_8q3q8")
 region = Rect2(0, 0, 32, 32)
@@ -150,12 +146,12 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wkgqk"]
+radius = 2.0
+height = 4.0
+
 [node name="Krampus" type="CharacterBody2D"]
 script = ExtResource("1_d3ev6")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_wkgqk")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
@@ -163,10 +159,14 @@ sprite_frames = SubResource("SpriteFrames_36kx6")
 animation = &"idle_down"
 offset = Vector2(0, -10)
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_wkgqk")
+
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 unique_name_in_owner = true
 path_desired_distance = 16.0
-target_desired_distance = 8.0
+debug_enabled = true
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("3_u6uqp")
@@ -177,9 +177,11 @@ script = ExtResource("4_dvxmd")
 
 [node name="Hunt" type="Node" parent="StateMachine"]
 script = ExtResource("5_ry02o")
+max_speed = 40.0
 
 [node name="Break" type="Node" parent="StateMachine"]
 script = ExtResource("6_g03o4")
 
 [node name="Retreat" type="Node" parent="StateMachine"]
 script = ExtResource("7_oswrj")
+max_speed = 60.0

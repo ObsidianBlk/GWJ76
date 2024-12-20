@@ -24,10 +24,11 @@ var _wait_time : float = 0.0
 # ------------------------------------------------------------------------------
 func enter(payload : Variant = null) -> void:
 	if host == null: return
+	print("Krampus BREAK!")
 	var target : Node2D = host.get_target()
 	if target is WindowBreak or target is Elf:
 		_target = target
-		_wait_time = wait_time
+		_wait_time = wait_time if target is WindowBreak else 0.0
 		play_animation(ANIM_IDLE)
 		host.velocity = Vector2.ZERO
 	else:
@@ -40,5 +41,6 @@ func update(delta : float) -> void:
 		if _target is WindowBreak:
 			_target.break_window()
 		elif _target is Elf:
-			pass
+			print("Krampus Capturing Elf")
+			_target.capture()
 		transition.emit(TRANSITION_RETREAT)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=4 uid="uid://k721ga0i20fb"]
+[gd_scene load_steps=23 format=4 uid="uid://k721ga0i20fb"]
 
 [ext_resource type="TileSet" uid="uid://dx3u8ly6mu55n" path="res://assets/graphics/tileset.tres" id="1_2t3lj"]
 [ext_resource type="Script" path="res://scenes/game_world/game_world.gd" id="1_622l6"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://cajfjo3480gtk" path="res://objects/window_right/window_right.tscn" id="6_tsb7d"]
 [ext_resource type="PackedScene" uid="uid://dh7iw05rmsumj" path="res://objects/krampus/krampus.tscn" id="6_w48ah"]
 [ext_resource type="PackedScene" uid="uid://bvuu7jml5snqw" path="res://objects/wood_station/wood_station.tscn" id="9_wo123"]
+[ext_resource type="Script" path="res://scripts/nodes/cabin_watch.gd" id="16_lqfl5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ulgvc"]
 size = Vector2(2048, 2048)
@@ -54,7 +55,7 @@ max_logs = 4
 [node name="WorldHeater" type="Area2D" parent="."]
 visible = false
 script = ExtResource("2_0mtnx")
-heat_value = -40.0
+heat_value = -10.0
 variance = 0.25
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WorldHeater"]
@@ -129,7 +130,6 @@ interactable = NodePath("Interactable")
 
 [node name="HeaterComponent" type="Area2D" parent="NavigationRegion2D/TileMapObjects/Firepit"]
 script = ExtResource("2_0mtnx")
-heat_value = 50.0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="NavigationRegion2D/TileMapObjects/Firepit/HeaterComponent"]
 polygon = PackedVector2Array(-8, -25, -8, 39, 58, 39, 58, -25)
@@ -161,12 +161,19 @@ position = Vector2(159, 90)
 plank_container = NodePath("..")
 
 [node name="DayCycleModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0, 0.108, 0.27, 1)
 script = ExtResource("4_7nv66")
-seconds_per_day = 60.0
+seconds_per_day = 120.0
 color_gradient = SubResource("Gradient_mjdyu")
 
+[node name="CabinWatch" type="Node" parent="." node_paths=PackedStringArray("cabin_windows", "cabin_doors", "firepit")]
+script = ExtResource("16_lqfl5")
+cabin_windows = [NodePath("../NavigationRegion2D/TileMapObjects/WindowLeft"), NodePath("../NavigationRegion2D/TileMapObjects/WindowRight")]
+cabin_doors = [NodePath("../NavigationRegion2D/TileMapObjects/Door")]
+firepit = NodePath("../NavigationRegion2D/TileMapObjects/Firepit")
+
 [connection signal="pickup_requested" from="." to="NavigationRegion2D/TileMapObjects/Elf" method="_on_pickup_requested"]
+[connection signal="weather_intensity_changed" from="." to="WorldHeater" method="set_intensity"]
+[connection signal="weather_intensity_changed" from="." to="NavigationRegion2D/TileMapObjects/Krampus" method="set_weather_intensity"]
 [connection signal="elf_outside" from="NavigationRegion2D/TileMapObjects/Door" to="NavigationRegion2D/TileMapObjects/Krampus" method="set_allow_elf_hunt"]
 [connection signal="daytime_changed" from="DayCycleModulate" to="." method="_on_daytime_changed"]

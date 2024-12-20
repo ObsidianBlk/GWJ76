@@ -33,7 +33,7 @@ var _idirection : Vector2 = Vector2.ZERO
 # ------------------------------------------------------------------------------
 func _HandleInteraction() -> void:
 	if interact_component == null: return
-	var interactable : Interactable = interact_component.get_interactable()
+	var interactable : Interactable = get_priority_interactable()
 	if interactable != null:
 		match interactable.type:
 			Interactable.IType.TRUNK:

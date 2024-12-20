@@ -28,6 +28,7 @@ const THROW_DISTANCE : float = 32.0
 # ------------------------------------------------------------------------------
 var _carrying : Node2D = null
 var _pulsing_body_temp : bool = false
+var _dead : bool = false
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -70,6 +71,13 @@ func _PulseBodyTempBar(fade_in : float, fade_out : float, hold : float, count : 
 	await tween.finished
 	_pulsing_body_temp = false
 
+func _Dead(reason : StringName) -> void:
+	if _dead: return
+	_dead = true
+	if is_carrying():
+		free_carrying(true)
+	_state_machine.transition_state(TRANSITION_DEATH, reason)
+
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
@@ -81,6 +89,10 @@ func play_animation(anim_name : StringName) -> void:
 	if _sprite == null: return
 	if _sprite.sprite_frames.has_animation(anim_name) and _sprite.animation != anim_name:
 		_sprite.play(anim_name)
+
+func has_animation(anim_name : StringName) -> bool:
+	if _sprite == null: return false
+	return _sprite.sprite_frames.has_animation(anim_name)
 
 func get_animation() -> StringName:
 	if _sprite == null: return &""
@@ -143,6 +155,13 @@ func free_carrying(free : bool = false) -> void:
 		_carrying.queue_free()
 	_carrying = null
 
+func is_dead() -> bool:
+	return _dead
+
+func capture() -> void:
+	if not _dead:
+		_Dead(GameWorld.DEATH_REASON_CAPTURED)
+
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
@@ -164,9 +183,10 @@ func _on_sprite_animation_looped() -> void:
 	animation_looped.emit(_sprite.animation)
 
 func _on_body_temp_changed(body_temp: float) -> void:
+	if _dead: return
 	_temperature_bar.value = body_temp
 	if body_temp < 250:
 		if not _pulsing_body_temp:
 			_PulseBodyTempBar(0.1, 0.1, 0.2)
 		if body_temp <= 0.0:
-			_state_machine.transition_state(TRANSITION_DEATH, GameWorld.DEATH_REASON_FROZEN)
+			_Dead(GameWorld.DEATH_REASON_FROZEN)

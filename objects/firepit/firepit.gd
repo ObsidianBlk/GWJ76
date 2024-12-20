@@ -1,5 +1,6 @@
 @tool
 extends Node2D
+class_name Firepit
 
 # ------------------------------------------------------------------------------
 # Signals
@@ -36,8 +37,9 @@ var _original_heater_value : float = 0.0
 # Setters / Getters
 # ------------------------------------------------------------------------------
 func set_intensity(i : float) -> void:
-	intensity = i
-	_UpdateIntensity()
+	if i >= 0.0 and i <= 1.0:
+		intensity = i
+		_UpdateIntensity()
 
 func set_heater_component(hc : HeaterComponent) -> void:
 	if hc != heater_component:
@@ -85,7 +87,8 @@ func _UpdateIntensity() -> void:
 	_fire_light.intensity = intensity
 	
 	if heater_component != null and not Engine.is_editor_hint():
-		heater_component.heat_value = lerp(0.0, _original_heater_value, intensity)
+		heater_component.intensity = intensity
+		#heater_component.heat_value = lerp(0.0, _original_heater_value, intensity)
 
 func _UpdatePit() -> void:
 	if _pit == null or _fire_light == null: return

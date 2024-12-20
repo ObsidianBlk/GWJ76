@@ -1,30 +1,31 @@
-extends Node2D
+extends Node
+class_name CabinWatch
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal elf_outside(inside : bool)
+
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-const ANIM_OPEN : StringName = &"open"
-const ANIM_CLOSED : StringName = &"closed"
+const REDUX_PER_SECOND : float = 0.05
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-
+@export var cabin_windows : Array[Node2D] = []
+@export var cabin_doors : Array[Node2D] = []
+@export var firepit : Firepit = null
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-var _door_open : bool = false
+var _is_exposed : bool = false
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
-@onready var _anim: AnimationPlayer = %AnimationPlayer
 
 
 # ------------------------------------------------------------------------------
@@ -35,34 +36,36 @@ var _door_open : bool = false
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
-
+func _process(delta: float) -> void:
+	_UpdateExposed()
+	if _is_exposed and firepit != null:
+		firepit.intensity -= REDUX_PER_SECOND * delta
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-
+func _UpdateExposed() -> void:
+	_is_exposed = false
+	for w : Node2D in cabin_windows:
+		if w.has_method(&"set_broken"):
+			if w.broken:
+				_is_exposed = true
+				return
+	
+	for d : Node2D in cabin_doors:
+		if d.has_method(&"is_door_open"):
+			if d.is_door_open():
+				_is_exposed = true
+				return
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func is_door_open() -> bool:
-	return _door_open
+
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
-func _on_interacted() -> void:
-	if _anim.current_animation == ANIM_OPEN:
-		_door_open = false
-		_anim.play(ANIM_CLOSED)
-	else:
-		_door_open = true
-		_anim.play(ANIM_OPEN)
 
-func _on_inside_area_body_entered(body: Node2D) -> void:
-	if body is Elf:
-		elf_outside.emit(false)
 
-func _on_ouside_area_body_entered(body: Node2D) -> void:
-	if body is Elf:
-		elf_outside.emit(true)
+

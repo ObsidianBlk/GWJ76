@@ -49,7 +49,7 @@ var _interactable : Interactable = null
 func enter(payload : Variant = null) -> void:
 	if host == null: return
 	if interact_component == null: return
-	_interactable = interact_component.get_interactable()
+	_interactable = get_priority_interactable()
 	if _interactable != null:
 		host.animation_finished.connect(_on_host_animation_finished)
 		play_animation(ANIM_CHOP)

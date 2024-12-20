@@ -11,6 +11,8 @@ class_name ElfStateDeath
 # ------------------------------------------------------------------------------
 const ANIM_DEATH : StringName = &"death"
 
+const TRANSITION_IDLE : StringName = &"Idle"
+
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
@@ -49,8 +51,12 @@ func enter(payload : Variant = null) -> void:
 	if host == null: return
 	if typeof(payload) == TYPE_STRING_NAME:
 		_reason = payload
-	host.animation_finished.connect(_on_host_animation_finished)
-	play_animation(ANIM_DEATH)
+	var anim : StringName = &"%s_%s"%[ANIM_DEATH, _reason]
+	if host.has_animation(anim):
+		host.animation_finished.connect(_on_host_animation_finished)
+		host.play_animation(anim)
+	else:
+		transition.emit(TRANSITION_IDLE)
 
 # ------------------------------------------------------------------------------
 # Handler Methods

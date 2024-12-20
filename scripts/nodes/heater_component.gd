@@ -17,6 +17,7 @@ signal temperature(amount : float)
 @export_range(0.0, 1.0) var intensity : float = 0.5 : 	set=set_intensity
 @export var heat_value : float = 20.0
 @export var variance : float = 0.2
+@export var verbose : bool = false
 
 # ------------------------------------------------------------------------------
 # Variables
@@ -49,11 +50,18 @@ func _process(delta: float) -> void:
 # Private Methods
 # ------------------------------------------------------------------------------
 func _GetTemperature() -> void:
-	var base_heat = lerpf(0.0, heat_value, intensity)
+	var base_heat : float = 0.0
+	if heat_value > 0.0:
+		base_heat = lerpf(0.0, heat_value, intensity)
+	else:
+		base_heat = lerpf(heat_value, 0.0, intensity)
 	var base_variance : float = variance * (1.0 - intensity)
 	var heat_variance : float = randf_range(-base_variance, base_variance)
 	var adj : float = base_heat * heat_variance
-	temperature.emit(heat_value + adj)
+	if verbose:
+		print("Intensity: ", intensity)
+		print("Heat: ", base_heat + adj)
+	temperature.emit(base_heat + adj)
 
 # ------------------------------------------------------------------------------
 # Public Methods

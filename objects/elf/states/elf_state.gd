@@ -106,6 +106,19 @@ func is_playing(anim_name : StringName) -> bool:
 	var cur_anim : StringName = host.get_animation()
 	return cur_anim.begins_with(anim_name)
 
+func get_priority_interactable() -> Interactable:
+	if interact_component == null: return null
+	var selected : Interactable = null
+	var ilist : Array[Interactable] = interact_component.get_interactables()
+	for act : Interactable in ilist:
+		if not act.interactable and not act.placeable: continue
+		if host.is_carrying() and act.type == Interactable.IType.PICKUP: continue
+		if selected == null:
+			selected = act
+		elif act.type < selected.type:
+			selected = act
+	return selected
+
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
