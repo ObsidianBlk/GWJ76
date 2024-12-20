@@ -41,6 +41,7 @@ shape = SubResource("CapsuleShape2D_lw0rr")
 [node name="Interactable_Right" type="Area2D" parent="."]
 script = ExtResource("3_ejf7x")
 type = 2
+message = "Chop"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Right"]
 position = Vector2(12, 15)
@@ -49,6 +50,7 @@ shape = SubResource("RectangleShape2D_kp8hv")
 [node name="Interactable_Left" type="Area2D" parent="."]
 script = ExtResource("3_ejf7x")
 type = 2
+message = "Chop"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Left"]
 position = Vector2(-12, 15)

@@ -7,8 +7,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wv7i8"]
 size = Vector2(8, 8)
 
-[node name="WindowLeft" type="Node2D"]
+[node name="WindowLeft" type="Node2D" node_paths=PackedStringArray("interactable")]
 script = ExtResource("1_8enk1")
+interactable = NodePath("Interactable")
 
 [node name="WindowWholeSprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_wffnc")
@@ -17,6 +18,7 @@ region_rect = Rect2(80, 16, 16, 16)
 
 [node name="WindowBrokenSprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+visible = false
 texture = ExtResource("1_wffnc")
 offset = Vector2(-8, 0)
 region_enabled = true
@@ -25,6 +27,8 @@ region_rect = Rect2(96, 16, 32, 16)
 [node name="Interactable" type="Area2D" parent="."]
 script = ExtResource("3_vpxce")
 type = 5
+interactable = false
+message = "Fix"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
 position = Vector2(-12, 0)

@@ -25,6 +25,8 @@ enum IType {
 @export var type : IType = IType.MISC
 @export var interactable : bool = true
 @export var placeable : bool = false
+@export var message : String = ""
+@export var icon : Texture2D = null
 
 # ------------------------------------------------------------------------------
 # Variables

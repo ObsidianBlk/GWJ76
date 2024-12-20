@@ -18,6 +18,8 @@ const MAX_THROW_HEIGHT : float = 8.0
 # ------------------------------------------------------------------------------
 @export_range(1, 10) var required_chops : int = 2
 @export var plank_container : Node2D = null
+@export var message_place : String = "Place"
+@export var message_use : String = "Use"
 
 # ------------------------------------------------------------------------------
 # Variables
@@ -56,8 +58,10 @@ func _ready() -> void:
 func _SetInteractionPlaceable(placeable : bool) -> void:
 	_interactable_bottom.interactable = not placeable
 	_interactable_bottom.placeable = placeable
+	_interactable_bottom.message = message_place if placeable else message_use
 	_interactable_top.interactable = not placeable
 	_interactable_top.placeable = placeable
+	_interactable_top.message = message_place if placeable else message_use
 
 func _Hover() -> void:
 	if _container == null or _is_hovering: return

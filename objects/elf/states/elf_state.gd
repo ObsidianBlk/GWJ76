@@ -26,7 +26,7 @@ const GROUP_INTERACT_COMPONENT : StringName = &"PlayerInteractComp"
 # Variables
 # ------------------------------------------------------------------------------
 var host : Elf = null
-var interact_component : InteractComponent = null
+#var interact_component : InteractComponent = null
 
 # ------------------------------------------------------------------------------
 # Onready Variables
@@ -45,13 +45,13 @@ func _ready() -> void:
 	await owner.ready
 	if owner is Elf:
 		host = owner
-		var cmps : Array[Node] = get_tree().get_nodes_in_group(GROUP_INTERACT_COMPONENT)
-		for cmp : Node in cmps:
-			if cmp is InteractComponent and host.is_ancestor_of(cmp):
-				interact_component = cmp
-				break
-		if interact_component == null:
-			printerr("Failed to find interact component for ", host.name)
+		#var cmps : Array[Node] = get_tree().get_nodes_in_group(GROUP_INTERACT_COMPONENT)
+		#for cmp : Node in cmps:
+			#if cmp is InteractComponent and host.is_ancestor_of(cmp):
+				#interact_component = cmp
+				#break
+		#if interact_component == null:
+			#printerr("Failed to find interact component for ", host.name)
 	if host == null:
 		printerr("[", name, "]: Null Host Node")
 	
@@ -105,19 +105,6 @@ func is_playing(anim_name : StringName) -> bool:
 	if host == null: return false
 	var cur_anim : StringName = host.get_animation()
 	return cur_anim.begins_with(anim_name)
-
-func get_priority_interactable() -> Interactable:
-	if interact_component == null: return null
-	var selected : Interactable = null
-	var ilist : Array[Interactable] = interact_component.get_interactables()
-	for act : Interactable in ilist:
-		if not act.interactable and not act.placeable: continue
-		if host.is_carrying() and act.type == Interactable.IType.PICKUP: continue
-		if selected == null:
-			selected = act
-		elif act.type < selected.type:
-			selected = act
-	return selected
 
 # ------------------------------------------------------------------------------
 # Handler Methods

@@ -18,9 +18,8 @@ var _interactable : Interactable = null
 # ------------------------------------------------------------------------------
 func enter(payload : Variant = null) -> void:
 	if host == null: return
-	if interact_component == null: return
 	
-	_interactable = get_priority_interactable()
+	_interactable = host.get_priority_interactable()
 	if host.is_carrying() and _interactable != null and _interactable.placeable:
 		if not host.animation_looped.is_connected(_on_host_animation_looped):
 			host.animation_looped.connect(_on_host_animation_looped)

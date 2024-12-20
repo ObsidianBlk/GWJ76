@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 Settings="*res://scripts/autos/settings.gd"
 AVC="*res://scripts/autos/avc.gd"
+HIDWatch="*res://scripts/autos/HIDWatch.gd"
 
 [editor_plugins]
 

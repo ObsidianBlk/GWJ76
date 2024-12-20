@@ -32,6 +32,7 @@ position = Vector2(0, -6)
 unique_name_in_owner = true
 script = ExtResource("2_xxypd")
 type = 4
+message = "Use"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Top"]
 position = Vector2(0, -8)
@@ -43,6 +44,7 @@ script = ExtResource("2_xxypd")
 type = 4
 interactable = false
 placeable = true
+message = "Use"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_Bottom"]
 position = Vector2(0, 8)

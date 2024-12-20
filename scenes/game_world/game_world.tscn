@@ -137,6 +137,7 @@ polygon = PackedVector2Array(-8, -25, -8, 39, 58, 39, 58, -25)
 [node name="Interactable" type="Area2D" parent="NavigationRegion2D/TileMapObjects/Firepit"]
 script = ExtResource("6_h1xg8")
 type = 3
+message = "Fuel"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="NavigationRegion2D/TileMapObjects/Firepit/Interactable"]
 position = Vector2(0, -2)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://cay4hlqqt2x2p"]
+[gd_scene load_steps=77 format=3 uid="uid://cay4hlqqt2x2p"]
 
 [ext_resource type="Script" path="res://objects/elf/elf.gd" id="1_kmnh1"]
 [ext_resource type="Texture2D" uid="uid://ibraj4lujg1h" path="res://assets/graphics/character.png" id="1_mn771"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://dqysnk3crkhvx" path="res://assets/graphics/tex_progress_bars/temperature_progress_bar_under.png" id="12_ydndl"]
 [ext_resource type="Texture2D" uid="uid://bmry650fke4am" path="res://assets/graphics/tex_progress_bars/temperature_progress_bar_over.png" id="13_r3ers"]
 [ext_resource type="Texture2D" uid="uid://dbno2fsygqwpn" path="res://assets/graphics/tex_progress_bars/progress_bar_10x6.png" id="14_aoxe1"]
+[ext_resource type="FontFile" uid="uid://2pnfuiv8proq" path="res://assets/fonts/Retro Gaming.ttf" id="16_3kisy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wrfw2"]
 atlas = ExtResource("1_mn771")
@@ -489,6 +490,23 @@ alpha_curve = SubResource("CurveTexture_xjrhs")
 hue_variation_min = -2.23517e-08
 hue_variation_max = -2.23517e-08
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_rtrkc"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_tshdo"]
+light_mode = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k7oiu"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0.0498333, 0.13, 0.501961)
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color(3.85046e-06, 0.810436, 0.938168, 1)
+border_blend = true
+
 [node name="Elf" type="CharacterBody2D" groups=["Elf"]]
 script = ExtResource("1_kmnh1")
 
@@ -536,6 +554,7 @@ script = ExtResource("9_wiv5j")
 script = ExtResource("9_gi08a")
 
 [node name="InteractComponent" type="Area2D" parent="." groups=["PlayerInteractComp"]]
+unique_name_in_owner = true
 script = ExtResource("7_s2qci")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractComponent"]
@@ -549,14 +568,25 @@ script = ExtResource("10_cb8c3")
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_py61d")
 
+[node name="BreathParticles" type="GPUParticles2D" parent="."]
+visible = false
+position = Vector2(0, -10)
+process_material = SubResource("ParticleProcessMaterial_3451p")
+explosiveness = 0.86
+randomness = 0.25
+
 [node name="TemperatureBar" type="TextureProgressBar" parent="."]
 unique_name_in_owner = true
+light_mask = 0
+z_index = 1
+material = SubResource("CanvasItemMaterial_rtrkc")
 custom_minimum_size = Vector2(16, 8)
 offset_left = -8.0
 offset_top = 1.0
 offset_right = 8.0
 offset_bottom = 9.0
 max_value = 1000.0
+value = 1000.0
 stretch_margin_left = 5
 stretch_margin_top = 2
 stretch_margin_right = 1
@@ -567,11 +597,40 @@ texture_progress = ExtResource("14_aoxe1")
 texture_progress_offset = Vector2(5, 2)
 tint_progress = Color(0.541176, 0.811765, 0.858824, 1)
 
-[node name="BreathParticles" type="GPUParticles2D" parent="."]
+[node name="MessagePanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 visible = false
-position = Vector2(0, -10)
-process_material = SubResource("ParticleProcessMaterial_3451p")
-explosiveness = 0.86
-randomness = 0.25
+material = SubResource("CanvasItemMaterial_tshdo")
+offset_left = -43.0
+offset_top = -33.0
+offset_right = 36.0
+offset_bottom = -18.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_k7oiu")
 
+[node name="Message" type="RichTextLabel" parent="MessagePanel"]
+unique_name_in_owner = true
+use_parent_material = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_fonts/normal_font = ExtResource("16_3kisy")
+theme_override_fonts/mono_font = ExtResource("16_3kisy")
+theme_override_fonts/italics_font = ExtResource("16_3kisy")
+theme_override_fonts/bold_italics_font = ExtResource("16_3kisy")
+theme_override_fonts/bold_font = ExtResource("16_3kisy")
+theme_override_font_sizes/bold_italics_font_size = 8
+theme_override_font_sizes/italics_font_size = 8
+theme_override_font_sizes/mono_font_size = 8
+theme_override_font_sizes/normal_font_size = 8
+theme_override_font_sizes/bold_font_size = 8
+bbcode_enabled = true
+text = "000000000000"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+visible_characters = 16
+visible_ratio = 2.28571
+
+[connection signal="interact_entered" from="InteractComponent" to="." method="_on_interact_changed"]
+[connection signal="interact_exited" from="InteractComponent" to="." method="_on_interact_changed"]
 [connection signal="body_temp_changed" from="TemperatureComponent" to="." method="_on_body_temp_changed"]

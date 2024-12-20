@@ -20,6 +20,7 @@ region_rect = Rect2(64, 16, 16, 15)
 [node name="Interactable" type="Area2D" parent="."]
 script = ExtResource("2_pueao")
 type = 1
+message = "Pick Up"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable"]
 position = Vector2(0, -6)

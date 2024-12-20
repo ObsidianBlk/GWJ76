@@ -14,7 +14,8 @@ extends Node2D
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var broken : bool = false:			set=set_broken
+@export var broken : bool = false:					set=set_broken
+@export var interactable : Interactable = null:		set=set_interactable
 
 # ------------------------------------------------------------------------------
 # Variables
@@ -33,20 +34,28 @@ extends Node2D
 func set_broken(b : bool) -> void:
 	if b != broken:
 		broken = b
-		_UpdateSprites()
+		_UpdateState()
+
+func set_interactable(i : Interactable) -> void:
+	if i != interactable:
+		interactable = i
+		_UpdateState()
 
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
 func _ready() -> void:
-	_UpdateSprites()
+	_UpdateState()
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-func _UpdateSprites() -> void:
-	if _window_broken_sprite == null: return
-	_window_broken_sprite.visible = broken
+func _UpdateState() -> void:
+	if _window_broken_sprite != null:
+		_window_broken_sprite.visible = broken
+	if interactable != null:
+		interactable.interactable = broken
+
 
 # ------------------------------------------------------------------------------
 # Public Methods

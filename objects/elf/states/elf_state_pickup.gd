@@ -20,7 +20,7 @@ var _free_carrying : bool = false
 # ------------------------------------------------------------------------------
 func enter(payload : Variant = null) -> void:
 	if host == null: return
-	_interactable = get_priority_interactable()
+	_interactable = host.get_priority_interactable()
 	if _interactable != null:
 		if typeof(payload) == TYPE_BOOL:
 			_free_carrying = payload

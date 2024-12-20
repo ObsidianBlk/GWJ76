@@ -176,6 +176,7 @@ occluder_light_mask = 0
 
 [node name="Interactable_South" type="Area2D" parent="."]
 script = ExtResource("2_firv1")
+message = "Door"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_South"]
 position = Vector2(8, 4)
@@ -183,6 +184,7 @@ shape = SubResource("RectangleShape2D_e7pqu")
 
 [node name="Interactable_North" type="Area2D" parent="."]
 script = ExtResource("2_firv1")
+message = "Door"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Interactable_North"]
 position = Vector2(8, -20)

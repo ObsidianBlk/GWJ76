@@ -37,7 +37,11 @@ var _dead : bool = false
 @onready var _sprite: AnimatedSprite2D = $ASprite
 @onready var _temperature_bar: TextureProgressBar = %TemperatureBar
 
+@onready var _interact_component: InteractComponent = %InteractComponent
 @onready var _state_machine: StateMachine = %StateMachine
+
+@onready var _message_panel: PanelContainer = %MessagePanel
+@onready var _message: RichTextLabel = %Message
 
 
 # ------------------------------------------------------------------------------
@@ -70,6 +74,14 @@ func _PulseBodyTempBar(fade_in : float, fade_out : float, hold : float, count : 
 		tween.tween_property(_temperature_bar, "modulate", Color.TRANSPARENT, fade_out)
 	await tween.finished
 	_pulsing_body_temp = false
+
+func _UpdateMessagePosition() -> void:
+	if _message_panel == null: return
+	var rect : Rect2 = _message_panel.get_rect()
+	var pos : Vector2 = _carry_container.position
+	pos.x -= rect.size.x * 0.5
+	pos.y -= rect.size.y
+	_message_panel.position = pos
 
 func _Dead(reason : StringName) -> void:
 	if _dead: return
@@ -162,6 +174,28 @@ func capture() -> void:
 	if not _dead:
 		_Dead(GameWorld.DEATH_REASON_CAPTURED)
 
+func get_priority_interactable() -> Interactable:
+	if _interact_component == null: return null
+	var selected : Interactable = null
+	var ilist : Array[Interactable] = _interact_component.get_interactables()
+	for act : Interactable in ilist:
+		if not act.interactable and not act.placeable: continue
+		if is_carrying() and act.type == Interactable.IType.PICKUP: continue
+		if selected == null:
+			selected = act
+		elif act.type < selected.type:
+			selected = act
+	return selected
+
+func update_message_box(message : String, icon_path : String) -> void:
+	_message_panel.visible = not message.is_empty()
+	if not message.is_empty():
+		if icon_path.is_empty():
+			_message.text = message
+		else:
+			_message.text = "[img=8x8]%s[/img]%s"%[icon_path, message]
+		_UpdateMessagePosition.call_deferred()
+
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
@@ -190,3 +224,12 @@ func _on_body_temp_changed(body_temp: float) -> void:
 			_PulseBodyTempBar(0.1, 0.1, 0.2)
 		if body_temp <= 0.0:
 			_Dead(GameWorld.DEATH_REASON_FROZEN)
+
+func _on_interact_changed(interactable: Interactable) -> void:
+	var act : Interactable = get_priority_interactable()
+	if act != null and not act.message.is_empty():
+		if not (act.placeable and not is_carrying()):
+			var icon_path : String = HIDWatch.get_interact_icon_path()
+			update_message_box(act.message, icon_path)
+			return
+	update_message_box("","")
