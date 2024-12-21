@@ -6,12 +6,14 @@ class_name GameWorld
 # ------------------------------------------------------------------------------
 signal pickup_requested(item : Node2D)
 signal weather_intensity_changed(intensity : float)
+signal game_ended(reason : StringName)
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
 const DEATH_REASON_CAPTURED : StringName = &"captured"
 const DEATH_REASON_FROZEN : StringName = &"frozen"
+const VICTORY_REASON_ESCAPED : StringName = &"escaped"
 
 const WEATHER_CURVE : Curve = preload("res://scenes/game_world/weather_curve.tres")
 const WEATHER_VARIANCE : float = 0.2
@@ -40,6 +42,7 @@ static var _Instance : GameWorld = null
 # ------------------------------------------------------------------------------
 @onready var _snow_overlay: ColorRect = %SnowOverlay
 @onready var _day_cycle_modulate: DayCycleModulate = %DayCycleModulate
+@onready var _escape_camera: Camera2D = %EscapeCamera
 
 
 # ------------------------------------------------------------------------------
@@ -137,3 +140,13 @@ func _on_daytime_changed(hour: float) -> void:
 		intensity += (intensity * variance)
 	#print("Hour: ", floor(hour), " | Intensity: ", intensity)
 	weather_intensity_changed.emit(intensity)
+
+func _on_end_game_watch_escaped() -> void:
+	game_ended.emit(VICTORY_REASON_ESCAPED)
+
+func _on_elf_dead(reason: StringName) -> void:
+	game_ended.emit(reason)
+
+func _on_elf_escaped() -> void:
+	_escape_camera.enabled = true
+	_escape_camera.make_current()

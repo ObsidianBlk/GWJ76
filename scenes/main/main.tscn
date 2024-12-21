@@ -1,10 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://dfq1h8qdoegw5"]
+[gd_scene load_steps=10 format=3 uid="uid://dfq1h8qdoegw5"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_lupj2"]
 [ext_resource type="PackedScene" uid="uid://cx5olg3degxr0" path="res://scenes/ui/main_menu/main_menu.tscn" id="3_6dx0w"]
 [ext_resource type="Script" path="res://scripts/ui/ui_layer.gd" id="3_l7den"]
 [ext_resource type="PackedScene" uid="uid://c18nb25dtr28j" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="4_srlef"]
 [ext_resource type="PackedScene" uid="uid://ddi108jw4wku" path="res://scenes/ui/options_menu/options_menu.tscn" id="5_sta4o"]
+[ext_resource type="Shader" path="res://shaders/transistor.gdshader" id="6_0pmrp"]
+[ext_resource type="Texture2D" uid="uid://dmvfj87o625na" path="res://assets/graphics/masks/stars.png" id="7_46wto"]
+[ext_resource type="Script" path="res://scenes/main/transition.gd" id="8_3bb5r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fojvp"]
+shader = ExtResource("6_0pmrp")
+shader_parameter/progress = 0.0
+shader_parameter/smoothness = 0.6
+shader_parameter/mask = ExtResource("7_46wto")
 
 [node name="Main" type="Node"]
 process_mode = 3
@@ -26,3 +35,19 @@ options_menu = &"OptionsMenu"
 options_menu = &"OptionsMenu"
 
 [node name="OptionsMenu" parent="UI" instance=ExtResource("5_sta4o")]
+
+[node name="TransitionLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="Transition" type="ColorRect" parent="TransitionLayer"]
+material = SubResource("ShaderMaterial_fojvp")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("8_3bb5r")
+
+[connection signal="fade_changed" from="." to="TransitionLayer/Transition" method="set_progress"]

@@ -55,8 +55,8 @@ func enter(payload : Variant = null) -> void:
 	if host.has_animation(anim):
 		host.animation_finished.connect(_on_host_animation_finished)
 		host.play_animation(anim)
-	else:
-		transition.emit(TRANSITION_IDLE)
+	#else:
+		#transition.emit(TRANSITION_IDLE)
 
 # ------------------------------------------------------------------------------
 # Handler Methods

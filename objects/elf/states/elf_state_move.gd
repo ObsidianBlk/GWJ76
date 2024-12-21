@@ -57,6 +57,9 @@ func _HandleInteraction() -> void:
 			Interactable.IType.MISC:
 				host.velocity = Vector2.ZERO
 				interactable.interact()
+			Interactable.IType.ESCAPE:
+				interactable.interact()
+				host.escape()
 	elif host.is_carrying():
 		host.throw_carrying(facing_name())
 

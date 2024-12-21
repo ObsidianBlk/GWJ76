@@ -1,45 +1,34 @@
-extends Area2D
-class_name Interactable
+extends CharacterBody2D
+class_name Santa
 
 # ------------------------------------------------------------------------------
 # Signals
 # ------------------------------------------------------------------------------
-signal interacted()
-signal placed(item : Node2D)
+signal destination_reached()
+signal elf_interacted()
 
 # ------------------------------------------------------------------------------
 # Constants and ENUMs
 # ------------------------------------------------------------------------------
-enum IType {
-	MISC=0,
-	PICKUP=1,
-	TRUNK=2,
-	FIRE=3,
-	WOOD_STATION=4,
-	WINDOW=5,
-	ESCAPE=6
-}
+
 
 # ------------------------------------------------------------------------------
 # Export Variables
 # ------------------------------------------------------------------------------
-@export var type : IType = IType.MISC
-@export var interactable : bool = true
-@export var placeable : bool = false
-@export var message : String = ""
-@export var icon : Texture2D = null
+
 
 # ------------------------------------------------------------------------------
 # Variables
 # ------------------------------------------------------------------------------
-
+var _tweening : bool = false
 
 # ------------------------------------------------------------------------------
 # Onready Variables
 # ------------------------------------------------------------------------------
+@onready var _interactable: Interactable = %Interactable
+@onready var _collision: CollisionShape2D = %CollisionShape2D
 
 
-	
 # ------------------------------------------------------------------------------
 # Setters / Getters
 # ------------------------------------------------------------------------------
@@ -48,26 +37,45 @@ enum IType {
 # ------------------------------------------------------------------------------
 # Override Methods
 # ------------------------------------------------------------------------------
+@onready var _viz: SantaViz = $Viz
 
 
 # ------------------------------------------------------------------------------
 # Private Methods
 # ------------------------------------------------------------------------------
-
+func _TweenToDestination(viz_state : SantaViz.Viz, destination : Vector2, duration: float) -> void:
+	if _tweening: return
+	_tweening = true
+	_viz.state = viz_state
 	
-
+	if duration > 0.0:
+		var tween : Tween = create_tween()
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(self, "global_position", destination, duration)
+		await tween.finished
+	else:
+		global_position = destination
+	_tweening = false
+	_viz.state = SantaViz.Viz.IDLE
+	destination_reached.emit()
 
 # ------------------------------------------------------------------------------
 # Public Methods
 # ------------------------------------------------------------------------------
-func interact() -> void:
-	if interactable:
-		interacted.emit()
+func interactable(enable : bool) -> void:
+	_interactable.interactable = enable
+	_collision.disabled = not enable
 
-func place(item : Node2D) -> void:
-	if placeable:
-		placed.emit(item)
+func fly_to(destination : Vector2, duration : float) -> void:
+	_TweenToDestination(SantaViz.Viz.FLIGHT, destination, duration)
+
+func walk_to(destination : Vector2, duration : float) -> void:
+	_TweenToDestination(SantaViz.Viz.WALK, destination, duration)
 
 # ------------------------------------------------------------------------------
 # Handler Methods
 # ------------------------------------------------------------------------------
+
+func _on_interactable_interacted() -> void:
+	elf_interacted.emit()

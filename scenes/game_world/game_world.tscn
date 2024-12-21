@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=4 uid="uid://k721ga0i20fb"]
+[gd_scene load_steps=27 format=4 uid="uid://k721ga0i20fb"]
 
 [ext_resource type="TileSet" uid="uid://dx3u8ly6mu55n" path="res://assets/graphics/tileset.tres" id="1_2t3lj"]
 [ext_resource type="Script" path="res://scenes/game_world/game_world.gd" id="1_622l6"]
@@ -15,8 +15,10 @@
 [ext_resource type="PackedScene" uid="uid://cajfjo3480gtk" path="res://objects/window_right/window_right.tscn" id="6_tsb7d"]
 [ext_resource type="PackedScene" uid="uid://dh7iw05rmsumj" path="res://objects/krampus/krampus.tscn" id="6_w48ah"]
 [ext_resource type="PackedScene" uid="uid://bvuu7jml5snqw" path="res://objects/wood_station/wood_station.tscn" id="9_wo123"]
+[ext_resource type="PackedScene" uid="uid://d4koujetkixsf" path="res://objects/santa/santa.tscn" id="15_1x5qo"]
 [ext_resource type="Script" path="res://scripts/nodes/cabin_watch.gd" id="16_lqfl5"]
 [ext_resource type="Shader" path="res://shaders/snow.gdshader" id="17_frufn"]
+[ext_resource type="Script" path="res://scripts/nodes/end_game_watch.gd" id="19_vjuer"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ulgvc"]
 size = Vector2(2048, 2048)
@@ -168,6 +170,27 @@ texture = SubResource("GradientTexture2D_bfuo6")
 position = Vector2(159, 90)
 plank_container = NodePath("..")
 
+[node name="Santa" parent="NavigationRegion2D/TileMapObjects" instance=ExtResource("15_1x5qo")]
+unique_name_in_owner = true
+z_index = 2
+position = Vector2(-911, -244)
+
+[node name="EscapeCamera" type="Camera2D" parent="NavigationRegion2D/TileMapObjects/Santa"]
+unique_name_in_owner = true
+enabled = false
+zoom = Vector2(3, 3)
+
+[node name="SantaPOI" type="Node2D" parent="NavigationRegion2D/TileMapObjects"]
+
+[node name="Landing" type="Marker2D" parent="NavigationRegion2D/TileMapObjects/SantaPOI"]
+position = Vector2(-59, -41)
+
+[node name="Walk" type="Marker2D" parent="NavigationRegion2D/TileMapObjects/SantaPOI"]
+position = Vector2(127, -38)
+
+[node name="Fly" type="Marker2D" parent="NavigationRegion2D/TileMapObjects/SantaPOI"]
+position = Vector2(708, -240)
+
 [node name="DayCycleModulate" type="CanvasModulate" parent="."]
 unique_name_in_owner = true
 visible = false
@@ -193,8 +216,31 @@ offset_top = -463.0
 offset_right = 536.0
 offset_bottom = 561.0
 
+[node name="EndGameWatch" type="Node" parent="." node_paths=PackedStringArray("santa", "landing_point", "walking_point", "flying_point")]
+script = ExtResource("19_vjuer")
+days_to_rescue = 1
+santa = NodePath("../NavigationRegion2D/TileMapObjects/Santa")
+landing_point = NodePath("../NavigationRegion2D/TileMapObjects/SantaPOI/Landing")
+walking_point = NodePath("../NavigationRegion2D/TileMapObjects/SantaPOI/Walk")
+flying_point = NodePath("../NavigationRegion2D/TileMapObjects/SantaPOI/Fly")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
 [connection signal="pickup_requested" from="." to="NavigationRegion2D/TileMapObjects/Elf" method="_on_pickup_requested"]
 [connection signal="weather_intensity_changed" from="." to="WorldHeater" method="set_intensity"]
 [connection signal="weather_intensity_changed" from="." to="NavigationRegion2D/TileMapObjects/Krampus" method="set_weather_intensity"]
 [connection signal="elf_outside" from="NavigationRegion2D/TileMapObjects/Door" to="NavigationRegion2D/TileMapObjects/Krampus" method="set_allow_elf_hunt"]
+[connection signal="dead" from="NavigationRegion2D/TileMapObjects/Elf" to="." method="_on_elf_dead"]
+[connection signal="escaped" from="NavigationRegion2D/TileMapObjects/Elf" to="." method="_on_elf_escaped"]
 [connection signal="daytime_changed" from="DayCycleModulate" to="." method="_on_daytime_changed"]
+[connection signal="daytime_changed" from="DayCycleModulate" to="EndGameWatch" method="set_hour"]
+[connection signal="escaped" from="EndGameWatch" to="." method="_on_end_game_watch_escaped"]

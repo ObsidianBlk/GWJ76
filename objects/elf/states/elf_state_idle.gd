@@ -63,6 +63,9 @@ func _HandleInteraction() -> void:
 					transition.emit(TRANSITION_PICKUP, true)
 			Interactable.IType.MISC:
 				interactable.interact()
+			Interactable.IType.ESCAPE:
+				interactable.interact()
+				host.escape()
 	elif host.is_carrying():
 		host.throw_carrying(facing_name())
 

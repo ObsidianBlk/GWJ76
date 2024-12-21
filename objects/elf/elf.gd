@@ -5,6 +5,7 @@ class_name Elf
 # Signals
 # ------------------------------------------------------------------------------
 signal dead(reason : StringName)
+signal escaped()
 signal animation_finished(anim_name : StringName)
 signal animation_looped(anim_name : StringName)
 
@@ -173,6 +174,12 @@ func is_dead() -> bool:
 func capture() -> void:
 	if not _dead:
 		_Dead(GameWorld.DEATH_REASON_CAPTURED)
+
+func escape() -> void:
+	if not _dead:
+		_Dead(&"")
+		visible = false
+		escaped.emit()
 
 func get_priority_interactable() -> Interactable:
 	if _interact_component == null: return null
