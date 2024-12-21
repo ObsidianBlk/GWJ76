@@ -29,7 +29,7 @@ void fragment() {
 		float edge = 0.005 + 0.05 * min(0.5 * abs(fi - 5.0 - dof), 1.0);
 		acc += vec3(smoothstep(edge, -edge, d) * (r.x / (1.0 + 0.02 * fi * 0.5)));
 	}
-	vec4 acc_color = vec4(acc, smoothstep(0.01, 0.25, acc.r));
+	vec4 acc_color = vec4(acc, smoothstep(0.01, 0.75, acc.g));
 	
 	COLOR = acc_color;//texture(screen_texture, SCREEN_UV);
 }

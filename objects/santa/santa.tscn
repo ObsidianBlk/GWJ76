@@ -219,14 +219,14 @@ frame_progress = 1.0
 [node name="ASprite_Deer_02" type="AnimatedSprite2D" parent="Viz"]
 position = Vector2(46, 3)
 sprite_frames = SubResource("SpriteFrames_4f5ia")
-animation = &"idle"
-frame_progress = 1.0
+animation = &"idle_bob"
+frame_progress = 0.386967
 
 [node name="ASprite_Deer_03" type="AnimatedSprite2D" parent="Viz"]
 position = Vector2(70, 3)
 sprite_frames = SubResource("SpriteFrames_4f5ia")
-animation = &"idle"
-frame_progress = 1.0
+animation = &"idle_bob"
+frame_progress = 0.386967
 
 [node name="Interactable" type="Area2D" parent="."]
 unique_name_in_owner = true

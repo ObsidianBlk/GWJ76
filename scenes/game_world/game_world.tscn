@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://k721ga0i20fb"]
+[gd_scene load_steps=28 format=4 uid="uid://k721ga0i20fb"]
 
 [ext_resource type="TileSet" uid="uid://dx3u8ly6mu55n" path="res://assets/graphics/tileset.tres" id="1_2t3lj"]
 [ext_resource type="Script" path="res://scenes/game_world/game_world.gd" id="1_622l6"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://d4koujetkixsf" path="res://objects/santa/santa.tscn" id="15_1x5qo"]
 [ext_resource type="Script" path="res://scripts/nodes/cabin_watch.gd" id="16_lqfl5"]
 [ext_resource type="Shader" path="res://shaders/snow.gdshader" id="17_frufn"]
+[ext_resource type="Script" path="res://scenes/game_world/snow_overlay.gd" id="19_tyow2"]
 [ext_resource type="Script" path="res://scripts/nodes/end_game_watch.gd" id="19_vjuer"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ulgvc"]
@@ -52,7 +53,7 @@ metadata/_snap_count = 24
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_65win"]
 shader = ExtResource("17_frufn")
 shader_parameter/width = 0.5
-shader_parameter/speed = 7.726
+shader_parameter/speed = 0.5
 shader_parameter/num_of_layers = 12
 
 [node name="GameWorld" type="Node2D" node_paths=PackedStringArray("object_container")]
@@ -207,7 +208,6 @@ firepit = NodePath("../NavigationRegion2D/TileMapObjects/Firepit")
 
 [node name="SnowOverlay" type="ColorRect" parent="."]
 unique_name_in_owner = true
-visible = false
 z_index = 3
 material = SubResource("ShaderMaterial_65win")
 custom_minimum_size = Vector2(1024, 1024)
@@ -215,6 +215,7 @@ offset_left = -488.0
 offset_top = -463.0
 offset_right = 536.0
 offset_bottom = 561.0
+script = ExtResource("19_tyow2")
 
 [node name="EndGameWatch" type="Node" parent="." node_paths=PackedStringArray("santa", "landing_point", "walking_point", "flying_point")]
 script = ExtResource("19_vjuer")
@@ -238,6 +239,7 @@ color = Color(0, 0, 0, 1)
 [connection signal="pickup_requested" from="." to="NavigationRegion2D/TileMapObjects/Elf" method="_on_pickup_requested"]
 [connection signal="weather_intensity_changed" from="." to="WorldHeater" method="set_intensity"]
 [connection signal="weather_intensity_changed" from="." to="NavigationRegion2D/TileMapObjects/Krampus" method="set_weather_intensity"]
+[connection signal="weather_intensity_changed" from="." to="SnowOverlay" method="set_intensity"]
 [connection signal="elf_outside" from="NavigationRegion2D/TileMapObjects/Door" to="NavigationRegion2D/TileMapObjects/Krampus" method="set_allow_elf_hunt"]
 [connection signal="dead" from="NavigationRegion2D/TileMapObjects/Elf" to="." method="_on_elf_dead"]
 [connection signal="escaped" from="NavigationRegion2D/TileMapObjects/Elf" to="." method="_on_elf_escaped"]

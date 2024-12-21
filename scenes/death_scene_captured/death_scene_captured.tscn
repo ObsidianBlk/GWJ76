@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://bsmb4sljfcy35"]
+
+[ext_resource type="Script" path="res://scenes/death_scene_captured/death_scene_captured.gd" id="1_ob7cw"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1xouo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_u5fxm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ywt58"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uh42k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_upuja"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sh7kb"]
+
+[node name="DeathSceneCaptured" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ob7cw")
+
+[node name="VLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VLayout"]
+layout_mode = 2
+text = "You let yourself be caught by Krampus!"
+
+[node name="BTN_Finished" type="Button" parent="VLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_1xouo")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_u5fxm")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ywt58")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_uh42k")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_upuja")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_sh7kb")
+text = " "
+
+[connection signal="pressed" from="VLayout/BTN_Finished" to="." method="_on_btn_finished_pressed"]

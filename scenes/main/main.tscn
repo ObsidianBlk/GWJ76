@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dfq1h8qdoegw5"]
+[gd_scene load_steps=13 format=3 uid="uid://dfq1h8qdoegw5"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_lupj2"]
 [ext_resource type="PackedScene" uid="uid://cx5olg3degxr0" path="res://scenes/ui/main_menu/main_menu.tscn" id="3_6dx0w"]
@@ -6,8 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://c18nb25dtr28j" path="res://scenes/ui/pause_menu/pause_menu.tscn" id="4_srlef"]
 [ext_resource type="PackedScene" uid="uid://ddi108jw4wku" path="res://scenes/ui/options_menu/options_menu.tscn" id="5_sta4o"]
 [ext_resource type="Shader" path="res://shaders/transistor.gdshader" id="6_0pmrp"]
+[ext_resource type="PackedScene" uid="uid://csp0d7uim2qyb" path="res://scenes/death_scene_frozen/death_scene_frozen.tscn" id="6_p2rdk"]
 [ext_resource type="Texture2D" uid="uid://dmvfj87o625na" path="res://assets/graphics/masks/stars.png" id="7_46wto"]
+[ext_resource type="PackedScene" uid="uid://bsmb4sljfcy35" path="res://scenes/death_scene_captured/death_scene_captured.tscn" id="7_yaxjl"]
 [ext_resource type="Script" path="res://scenes/main/transition.gd" id="8_3bb5r"]
+[ext_resource type="PackedScene" uid="uid://bjjb4nwpteb2u" path="res://scenes/victory_scene_escaped/victory_scene_escaped.tscn" id="8_frlmu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fojvp"]
 shader = ExtResource("6_0pmrp")
@@ -36,6 +39,15 @@ options_menu = &"OptionsMenu"
 
 [node name="OptionsMenu" parent="UI" instance=ExtResource("5_sta4o")]
 
+[node name="EndSceneLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="DeathSceneFrozen" parent="EndSceneLayer" instance=ExtResource("6_p2rdk")]
+
+[node name="DeathSceneCaptured" parent="EndSceneLayer" instance=ExtResource("7_yaxjl")]
+
+[node name="VictorySceneEscaped" parent="EndSceneLayer" instance=ExtResource("8_frlmu")]
+
 [node name="TransitionLayer" type="CanvasLayer" parent="."]
 layer = 100
 
@@ -51,3 +63,6 @@ color = Color(0, 0, 0, 1)
 script = ExtResource("8_3bb5r")
 
 [connection signal="fade_changed" from="." to="TransitionLayer/Transition" method="set_progress"]
+[connection signal="scene_exited" from="EndSceneLayer/DeathSceneFrozen" to="." method="_on_scene_exited"]
+[connection signal="scene_exited" from="EndSceneLayer/DeathSceneCaptured" to="." method="_on_scene_exited"]
+[connection signal="scene_exited" from="EndSceneLayer/VictorySceneEscaped" to="." method="_on_scene_exited"]

@@ -30,6 +30,10 @@ var _fading : bool = false
 # ------------------------------------------------------------------------------
 @onready var _ui: UILayer = %UI
 
+@onready var _death_scene_frozen: Control = $EndSceneLayer/DeathSceneFrozen
+@onready var _death_scene_captured: Control = $EndSceneLayer/DeathSceneCaptured
+@onready var _victory_scene_escaped: Control = $EndSceneLayer/VictorySceneEscaped
+
 
 # ------------------------------------------------------------------------------
 # Override Methods
@@ -126,4 +130,22 @@ func _FadeTo(target : float, duration : float) -> void:
 # Handler Methods
 # ------------------------------------------------------------------------------
 func _on_game_ended(reason : StringName) -> void:
-	pass
+	await _FadeTo(1.0, 1.0)
+	_RemoveGameWorld()
+	match reason:
+		GameWorld.DEATH_REASON_CAPTURED:
+			_death_scene_captured.show_scene()
+		GameWorld.DEATH_REASON_FROZEN:
+			_death_scene_frozen.show_scene()
+		GameWorld.VICTORY_REASON_ESCAPED:
+			_victory_scene_escaped.show_scene()
+	_FadeTo(0.0, 1.0)
+
+func _on_scene_exited() -> void:
+	await _FadeTo(1.0, 1.0)
+	_FadeTo.call_deferred(0.0, 1.0)
+	fade_complete.connect(
+		(func():
+			_ui.open_default_ui()),
+		CONNECT_ONE_SHOT
+	)

@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://csp0d7uim2qyb"]
+
+[ext_resource type="Script" path="res://scenes/death_scene_frozen/death_scene_frozen.gd" id="1_2pr7x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d7p1w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xe7e4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lp4hp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4kd2f"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fymmj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6lgmt"]
+
+[node name="DeathSceneFrozen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2pr7x")
+
+[node name="VLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VLayout"]
+layout_mode = 2
+text = "You Froze to death, you fool!"
+
+[node name="BTN_Finished" type="Button" parent="VLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_d7p1w")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_xe7e4")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_lp4hp")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_4kd2f")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_fymmj")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_6lgmt")
+text = "  "
+
+[connection signal="pressed" from="VLayout/BTN_Finished" to="." method="_on_btn_finished_pressed"]
